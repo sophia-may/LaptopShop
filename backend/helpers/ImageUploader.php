@@ -34,9 +34,8 @@ class ImageUploader {
         }
 
         // Check MIME type using finfo (NOT trusting client-sent type)
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mime = finfo_file($finfo, $file['tmp_name']);
-        finfo_close($finfo);
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $mime = $finfo->file($file['tmp_name']);
 
         if (!in_array($mime, ALLOWED_IMAGE_MIMES)) {
             return null;
@@ -72,16 +71,24 @@ class ImageUploader {
      * @param string $relativePath  Relative path as stored in DB (e.g. 'uploads/avatars/abc123.jpg')
      * @return bool
      */
+    /**
+     * Delete an uploaded file securely.
+     * Uses realpath() to ensure the target is within the safe 'uploads/' directory (Sandbox).
+     */
     public static function delete(string $relativePath): bool {
         if (empty($relativePath)) {
             return false;
         }
 
-        // Resolve to absolute path from backend root
-        $absolutePath = __DIR__ . '/../' . $relativePath;
+        // Resolving the safe base directory (uploads/)
+        $safeBaseDir = realpath(__DIR__ . '/../uploads');
+        // Resolving the potential target file
+        $targetFile = realpath(__DIR__ . '/../' . $relativePath);
 
-        if (file_exists($absolutePath) && is_file($absolutePath)) {
-            return unlink($absolutePath);
+        // SECURE CHECK: File must exist, be a regular file, and be LOCATED INSIDE the safe uploads directory.
+        // This prevents Path Traversal (Arbitrary File Deletion) e.g., "uploads/../../index.php"
+        if ($targetFile && is_file($targetFile) && strpos($targetFile, $safeBaseDir) === 0) {
+            return unlink($targetFile);
         }
 
         return false;

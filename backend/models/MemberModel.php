@@ -36,6 +36,14 @@ class MemberModel extends BaseModel {
             }
         }
 
+        // Safe Dynamic Sorting (Whitelist)
+        $allowedSort = ['id', 'fullname', 'email', 'points', 'created_at', 'updated_at'];
+        $sortBy = in_array($filters['sort'] ?? '', $allowedSort) ? $filters['sort'] : 'created_at';
+        $direction = strtoupper($filters['dir'] ?? '') === 'ASC' ? 'ASC' : 'DESC';
+
+        // Add table prefix to skip ambiguity errors
+        $sortColumn = ($sortBy === 'points') ? "m.$sortBy" : "u.$sortBy";
+
         // Count total
         $countSql = "SELECT COUNT(*) FROM users u JOIN members m ON u.id = m.user_id WHERE $where";
         $countStmt = $this->db->prepare($countSql);
@@ -50,13 +58,19 @@ class MemberModel extends BaseModel {
                 JOIN members m ON u.id = m.user_id
                 LEFT JOIN membership_tiers t ON m.tier_id = t.id
                 WHERE $where
-                ORDER BY u.created_at DESC
+                ORDER BY $sortColumn $direction
                 LIMIT ? OFFSET ?";
 
-        $params[] = $limit;
-        $params[] = $offset;
         $stmt = $this->db->prepare($sql);
-        $stmt->execute($params);
+        // Bind parameters
+        $i = 1;
+        foreach ($params as $param) {
+            $stmt->bindValue($i++, $param);
+        }
+        $stmt->bindValue($i++, $limit, PDO::PARAM_INT);
+        $stmt->bindValue($i++, $offset, PDO::PARAM_INT);
+
+        $stmt->execute();
         $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         return [

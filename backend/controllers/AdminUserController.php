@@ -35,9 +35,17 @@ class AdminUserController extends BaseController {
         $filters = [
             'search' => $_GET['search'] ?? '',
             'status' => $_GET['status'] ?? '',
+            'sort'   => $_GET['sort'] ?? 'created_at',
+            'dir'    => $_GET['dir'] ?? 'DESC',
         ];
 
         $result = $this->memberModel->getPaginated($page, $limit, $filters);
+
+        // BẢN VÁ LEAKAGE: Duyệt mảng và xóa hash (nếu có)
+        foreach ($result['items'] as &$m) {
+            unset($m['password_hash']);
+        }
+
         $this->jsonResponse($result);
     }
 
@@ -54,6 +62,9 @@ class AdminUserController extends BaseController {
         if (!$member) {
             $this->jsonError('Member not found.', 404);
         }
+
+        // BẢN VÁ LEAKAGE
+        unset($member['password_hash']);
 
         $this->jsonResponse($member);
     }

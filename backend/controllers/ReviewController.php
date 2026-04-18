@@ -24,8 +24,9 @@ class ReviewController extends BaseController {
      */
     public function byProduct(string $id): void {
         $productId = (int) $id;
+        // BẢN VÁ PHÂN TRANG
         $page = max(1, (int) ($_GET['page'] ?? 1));
-        $limit = min(50, max(1, (int) ($_GET['limit'] ?? 10)));
+        $limit = min(100, max(1, (int) ($_GET['limit'] ?? 10)));
 
         $result = $this->model->getByProduct($productId, $page, $limit);
         $this->jsonResponse($result);
@@ -58,7 +59,8 @@ class ReviewController extends BaseController {
             $this->jsonError('You have already reviewed this product.', 409);
         }
 
-        $comment = isset($data['comment']) ? htmlspecialchars(trim($data['comment']), ENT_QUOTES, 'UTF-8') : null;
+        // Comment is already sanitized by getPostData()
+        $comment = isset($data['comment']) ? $data['comment'] : null;
 
         $reviewId = $this->model->create($payload['id'], $productId, $rating, $comment);
 

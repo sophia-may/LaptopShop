@@ -103,7 +103,7 @@ class AuthController extends BaseController {
         // Generate JWT
         $token = JwtHelper::generate(['id' => $user['id'], 'role' => 'member']);
 
-        // Remove sensitive data
+        // BẢN VÁ LEAKAGE: Luôn xóa hash trước khi trả về
         unset($user['password_hash']);
         $user['role'] = 'member';
 
@@ -144,6 +144,7 @@ class AuthController extends BaseController {
 
         $token = JwtHelper::generate(['id' => $user['id'], 'role' => 'admin']);
 
+        // BẢN VÁ LEAKAGE: Luôn xóa hash trước khi trả về
         unset($user['password_hash']);
         $user['role'] = 'admin';
 
@@ -161,6 +162,9 @@ class AuthController extends BaseController {
         if (!$user) {
             $this->jsonError('User not found.', 404);
         }
+
+        // BẢN VÁ LEAKAGE
+        unset($user['password_hash']);
 
         $this->jsonResponse($user);
     }
@@ -193,6 +197,9 @@ class AuthController extends BaseController {
         );
 
         $user = $this->userModel->findById($payload['id']);
+        // BẢN VÁ LEAKAGE
+        unset($user['password_hash']);
+
         $this->jsonResponse($user);
     }
 

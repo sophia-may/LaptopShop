@@ -19,8 +19,9 @@
 // 1. CORS Headers
 // ============================================================
 header('Access-Control-Allow-Origin: *');
+header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, Accept, Origin');
 
 // 2. Handle OPTIONS preflight
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -82,13 +83,13 @@ $routes = [
     'POST /api/contacts'               => ['ContactController', 'store'],
 
     // ===================== PUBLIC: PRODUCTS =====================
+    // IMPORTANT: More specific routes MUST come first!
+    // /products/featured and /products/:id/reviews must precede /products/:slug
     'GET  /api/products/featured'      => ['ProductController', 'featured'],
-    'GET  /api/products'               => ['ProductController', 'index'],
-    'GET  /api/products/:slug'         => ['ProductController', 'show'],
-
-    // ===================== PUBLIC: REVIEWS =====================
     'GET  /api/products/:id/reviews'   => ['ReviewController', 'byProduct'],
     'POST /api/products/:id/reviews'   => ['ReviewController', 'store'],
+    'GET  /api/products'               => ['ProductController', 'index'],
+    'GET  /api/products/:slug'         => ['ProductController', 'show'],
 
     // ===================== PUBLIC: CATEGORIES =====================
     'GET  /api/categories'             => ['CategoryController', 'index'],
@@ -123,6 +124,61 @@ $routes = [
     'GET  /api/admin/site-settings'              => ['SiteSettingsController', 'index'],
     'PUT  /api/admin/site-settings/:key'         => ['SiteSettingsController', 'update'],
     'POST /api/admin/site-settings/upload'       => ['SiteSettingsController', 'uploadImage'],
+
+    // ===================== SHOPPING CART =====================
+    'GET    /api/cart'                   => ['CartController', 'index'],
+    'POST   /api/cart/add'               => ['CartController', 'add'],
+    'PUT    /api/cart/update'            => ['CartController', 'update'],
+    'DELETE /api/cart/remove'            => ['CartController', 'remove'],
+    'DELETE /api/cart/clear'             => ['CartController', 'clear'],
+
+    // ===================== ORDERS =====================
+    'POST   /api/orders/checkout'        => ['OrderController', 'checkout'],
+    'GET    /api/orders'                 => ['OrderController', 'index'],
+    'GET    /api/orders/:code'           => ['OrderController', 'show'],
+    // ===================== ADMIN: ORDERS =====================
+    'GET    /api/admin/orders'           => ['OrderController', 'adminList'],
+    'GET    /api/admin/orders/:code'     => ['OrderController', 'adminShow'],
+    'PUT    /api/admin/orders/:id/status' => ['OrderController', 'updateStatus'],
+
+    // ===================== ADMIN: PRODUCTS =====================
+    'GET    /api/admin/products'         => ['AdminProductController', 'index'],
+    'GET    /api/admin/products/:id'     => ['AdminProductController', 'show'],
+    'POST   /api/admin/products'         => ['AdminProductController', 'store'],
+    'PUT    /api/admin/products/:id'     => ['AdminProductController', 'update'],
+    'DELETE /api/admin/products/:id'     => ['AdminProductController', 'destroy'],
+    'POST   /api/admin/products/:id/variants' => ['AdminProductController', 'addVariant'],
+    'POST   /api/admin/products/upload'  => ['AdminProductController', 'uploadImage'],
+
+    // ===================== ADMIN: ARTICLES =====================
+    'GET    /api/admin/articles'         => ['AdminArticleController', 'index'],
+    'GET    /api/admin/articles/:id'     => ['AdminArticleController', 'show'],
+    'POST   /api/admin/articles'         => ['AdminArticleController', 'store'],
+    'PUT    /api/admin/articles/:id'     => ['AdminArticleController', 'update'],
+    'DELETE /api/admin/articles/:id'     => ['AdminArticleController', 'destroy'],
+    'POST   /api/admin/articles/upload'  => ['AdminArticleController', 'uploadThumbnail'],
+
+    // ===================== ADMIN: REVIEWS =====================
+    'GET    /api/admin/reviews'          => ['AdminReviewController', 'index'],
+    'PUT    /api/admin/reviews/:id/status' => ['AdminReviewController', 'updateStatus'],
+    'DELETE /api/admin/reviews/:id'      => ['AdminReviewController', 'destroy'],
+
+    // ===================== ADMIN: CATALOG & FAQS =====================
+    'GET    /api/admin/categories'       => ['AdminCatalogController', 'listCategories'],
+    'POST   /api/admin/categories'       => ['AdminCatalogController', 'storeCategory'],
+    'PUT    /api/admin/categories/:id'   => ['AdminCatalogController', 'updateCategory'],
+    'DELETE /api/admin/categories/:id'   => ['AdminCatalogController', 'destroyCategory'],
+
+    'GET    /api/admin/brands'           => ['AdminCatalogController', 'listBrands'],
+    'POST   /api/admin/brands'           => ['AdminCatalogController', 'storeBrand'],
+    'PUT    /api/admin/brands/:id'       => ['AdminCatalogController', 'updateBrand'],
+    'DELETE /api/admin/brands/:id'       => ['AdminCatalogController', 'destroyBrand'],
+    'POST   /api/admin/brands/upload'    => ['AdminCatalogController', 'uploadBrandLogo'],
+
+    'GET    /api/admin/faqs'             => ['AdminCatalogController', 'listFaqs'],
+    'POST   /api/admin/faqs'             => ['AdminCatalogController', 'storeFaq'],
+    'PUT    /api/admin/faqs/:id'         => ['AdminCatalogController', 'updateFaq'],
+    'DELETE /api/admin/faqs/:id'         => ['AdminCatalogController', 'destroyFaq'],
 ];
 
 // ============================================================

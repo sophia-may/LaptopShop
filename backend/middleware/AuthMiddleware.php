@@ -26,6 +26,17 @@ class AuthMiddleware {
             self::sendError('Token invalid or expired.', 401);
         }
 
+        // BẢN VÁ ZOMBIE TOKEN: Kiểm tra real-time is_active trong DB
+        require_once __DIR__ . '/../config/database.php';
+        $db = Database::getConnection();
+        $stmt = $db->prepare("SELECT is_active FROM users WHERE id = ?");
+        $stmt->execute([$payload['id']]);
+        $isActive = $stmt->fetchColumn();
+
+        if (!$isActive) {
+            self::sendError('Your account has been locked by administrator.', 403);
+        }
+
         return $payload;
     }
 

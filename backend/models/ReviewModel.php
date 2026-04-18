@@ -27,7 +27,10 @@ class ReviewModel extends BaseModel {
              ORDER BY r.created_at DESC
              LIMIT ? OFFSET ?"
         );
-        $stmt->execute([$productId, $limit, $offset]);
+        $stmt->bindValue(1, $productId, PDO::PARAM_INT);
+        $stmt->bindValue(2, $limit, PDO::PARAM_INT);
+        $stmt->bindValue(3, $offset, PDO::PARAM_INT);
+        $stmt->execute();
         $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         // Average rating
@@ -67,5 +70,83 @@ class ReviewModel extends BaseModel {
         );
         $stmt->execute([$userId, $productId, $rating, $comment]);
         return (int) $this->db->lastInsertId();
+    }
+
+    /**
+     * Admin: Get paginated reviews with product and user info.
+     */
+    public function adminGetPaginated(int $page = 1, int $limit = 10, array $filters = []): array {
+        $offset = ($page - 1) * $limit;
+        $where = '1=1';
+        $params = [];
+
+        if (!empty($filters['status'])) {
+            $where .= ' AND r.status = ?';
+            $params[] = $filters['status'];
+        }
+
+        if (!empty($filters['search'])) {
+            $where .= ' AND (r.comment LIKE ? OR u.fullname LIKE ? OR p.name LIKE ?)';
+            $search = '%' . $filters['search'] . '%';
+            $params[] = $search;
+            $params[] = $search;
+            $params[] = $search;
+        }
+
+        // Safe Dynamic Sorting (Whitelist)
+        $allowedSort = ['id', 'rating', 'created_at', 'status'];
+        $sortBy = in_array($filters['sort'] ?? '', $allowedSort) ? $filters['sort'] : 'created_at';
+        $direction = strtoupper($filters['dir'] ?? '') === 'ASC' ? 'ASC' : 'DESC';
+
+        $countSql = "SELECT COUNT(*) FROM reviews r JOIN users u ON r.user_id = u.id JOIN products p ON r.product_id = p.id WHERE $where";
+        $countStmt = $this->db->prepare($countSql);
+        $countStmt->execute($params);
+        $total = (int) $countStmt->fetchColumn();
+
+        $sql = "SELECT r.*, u.fullname as reviewer_name, p.name as product_name 
+                FROM reviews r 
+                JOIN users u ON r.user_id = u.id
+                JOIN products p ON r.product_id = p.id
+                WHERE $where
+                ORDER BY r.$sortBy $direction
+                LIMIT ? OFFSET ?";
+        
+        $stmt = $this->db->prepare($sql);
+        $i = 1;
+        foreach ($params as $p) { $stmt->bindValue($i++, $p); }
+        $stmt->bindValue($i++, $limit, PDO::PARAM_INT);
+        $stmt->bindValue($i++, $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return [
+            'items' => $stmt->fetchAll(PDO::FETCH_ASSOC),
+            'total' => $total,
+            'page'  => $page,
+            'limit' => $limit
+        ];
+    }
+
+    /**
+     * Admin: Update review status.
+     */
+    public function updateStatus(int $id, string $status): bool {
+        $stmt = $this->db->prepare('UPDATE reviews SET status = ? WHERE id = ?');
+        return $stmt->execute([$status, $id]);
+    }
+
+    /**
+     * Admin: Delete review.
+     */
+    public function delete(int $id): bool {
+        $stmt = $this->db->prepare('DELETE FROM reviews WHERE id = ?');
+        return $stmt->execute([$id]);
+    }
+
+    /**
+     * Count total reviews (for dashboard).
+     */
+    public function countTotal(): int {
+        $stmt = $this->db->query('SELECT COUNT(*) FROM reviews');
+        return (int) $stmt->fetchColumn();
     }
 }

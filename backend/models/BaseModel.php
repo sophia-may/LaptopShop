@@ -7,7 +7,7 @@ require_once __DIR__ . '/../config/database.php';
  * Each child model writes its own queries — no generic CRUD abstraction.
  */
 abstract class BaseModel {
-    protected PDO $db;
+    public PDO $db;
 
     public function __construct() {
         $this->db = Database::getConnection();

@@ -43,16 +43,77 @@ class BaseController {
     }
 
     /**
-     * Parse request body from JSON or fallback to $_POST.
+     * Parse and sanitize request body from JSON or fallback to $_POST.
+     *
+     * @param array $excludeFields Keys that should NOT be sanitized (e.g. ['content', 'detail_description'])
+     * @return array
      */
-    protected function getPostData(): array {
+    protected function getPostData(array $excludeFields = []): array {
         $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+        $data = [];
+
         if (strpos($contentType, 'application/json') !== false) {
             $json = json_decode(file_get_contents('php://input'), true);
-            return is_array($json) ? $json : [];
+            $data = is_array($json) ? $json : [];
+        } else {
+            $data = $_POST;
         }
-        return $_POST;
+
+        // Global XSS Sanitization (Recursive)
+        $this->sanitizeRecursive($data, $excludeFields);
+
+        return $data;
     }
+
+    /**
+     * Helper to recursively sanitize data using htmlspecialchars.
+     *
+     * @param array &$data          Reference to the data array
+     * @param array $excludeFields  Keys that should NOT be sanitized
+     */
+    private function sanitizeRecursive(array &$data, array $excludeFields = []): void {
+        foreach ($data as $key => &$value) {
+            // Skip fields in the exclude list
+            if (in_array($key, $excludeFields)) {
+                continue;
+            }
+
+            if (is_array($value)) {
+                $this->sanitizeRecursive($value, $excludeFields);
+            } elseif (is_string($value)) {
+                // Remove whitespace and escape HTML
+                $value = htmlspecialchars(trim($value), ENT_QUOTES, 'UTF-8');
+            }
+        }
+    }
+
+    /**
+     * Extracts only the specified fields from an array.
+     * Use this to prevent 'Mass Assignment' vulnerabilities.
+     *
+     * Example: $safeData = $this->pick($postData, ['fullname', 'phone']);
+     *
+     * @param array $data   Source data
+     * @param array $fields Allowed field keys
+     * @return array        Filtered array
+     */
+    protected function pick(array $data, array $fields): array {
+        $filtered = [];
+        foreach ($fields as $field) {
+            if (array_key_exists($field, $data)) {
+                $filtered[$field] = $data[$field];
+            }
+        }
+        return $filtered;
+    }
+
+    /*
+     * !!! BUSINESS LOGIC RULES RECAP !!!
+     * 1. ZERO-TRUST PRICING: Never trust 'price' from client payload.
+     *    Always query the DB for the authoritative base_price by ID.
+     * 2. PRIVILEGE INTEGRITY: Never trust 'role', 'tier_id', or 'points' from client payload.
+     *    These must be updated via specific administrative endpoints or server-side calculations.
+     */
 
     /**
      * Validate data against rules. Returns empty array if all valid,
@@ -95,8 +156,11 @@ class BaseController {
                     continue;
                 }
 
+                // Check if the field has an actual value (even if it's 0 or '0')
+                $hasValue = ($value !== null && $value !== '');
+
                 // email
-                if ($rule === 'email' && $value) {
+                if ($rule === 'email' && $hasValue) {
                     if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
                         $errors[$field] = 'Invalid email format.';
                         break;
@@ -104,8 +168,13 @@ class BaseController {
                 }
 
                 // min:N
-                if (strpos($rule, 'min:') === 0 && $value) {
+                if (strpos($rule, 'min:') === 0 && $hasValue) {
                     $min = (int) substr($rule, 4);
+                    // BẢN VÁ CRASH: Chỉ check mb_strlen nếu là string
+                    if (!is_string($value)) {
+                        $errors[$field] = ucfirst(str_replace('_', ' ', $field)) . " must be a valid text string.";
+                        break;
+                    }
                     if (mb_strlen($value) < $min) {
                         $errors[$field] = ucfirst(str_replace('_', ' ', $field)) . " must be at least $min characters.";
                         break;
@@ -113,8 +182,13 @@ class BaseController {
                 }
 
                 // max:N
-                if (strpos($rule, 'max:') === 0 && $value) {
+                if (strpos($rule, 'max:') === 0 && $hasValue) {
                     $max = (int) substr($rule, 4);
+                    // BẢN VÁ CRASH: Chỉ check mb_strlen nếu là string
+                    if (!is_string($value)) {
+                        $errors[$field] = ucfirst(str_replace('_', ' ', $field)) . " must be a valid text string.";
+                        break;
+                    }
                     if (mb_strlen($value) > $max) {
                         $errors[$field] = ucfirst(str_replace('_', ' ', $field)) . " must be at most $max characters.";
                         break;
@@ -122,7 +196,7 @@ class BaseController {
                 }
 
                 // in:a,b,c
-                if (strpos($rule, 'in:') === 0 && $value) {
+                if (strpos($rule, 'in:') === 0 && $hasValue) {
                     $allowed = explode(',', substr($rule, 3));
                     if (!in_array($value, $allowed)) {
                         $errors[$field] = ucfirst(str_replace('_', ' ', $field)) . ' must be one of: ' . implode(', ', $allowed) . '.';
@@ -131,15 +205,15 @@ class BaseController {
                 }
 
                 // phone (Vietnamese format)
-                if ($rule === 'phone' && $value) {
-                    if (!preg_match('/^(0|\+84)[0-9]{9}$/', $value)) {
+                if ($rule === 'phone' && $hasValue) {
+                    if (!is_string($value) || !preg_match('/^(0|\+84)[0-9]{9}$/', $value)) {
                         $errors[$field] = 'Invalid phone number format.';
                         break;
                     }
                 }
 
                 // numeric
-                if ($rule === 'numeric' && $value) {
+                if ($rule === 'numeric' && $hasValue) {
                     if (!is_numeric($value)) {
                         $errors[$field] = ucfirst(str_replace('_', ' ', $field)) . ' must be numeric.';
                         break;
@@ -147,7 +221,7 @@ class BaseController {
                 }
 
                 // integer
-                if ($rule === 'integer' && $value) {
+                if ($rule === 'integer' && $hasValue) {
                     if (filter_var($value, FILTER_VALIDATE_INT) === false) {
                         $errors[$field] = ucfirst(str_replace('_', ' ', $field)) . ' must be an integer.';
                         break;

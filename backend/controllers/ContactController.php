@@ -39,15 +39,13 @@ class ContactController extends BaseController {
             $this->jsonError('Validation failed.', 422, $errors);
         }
 
-        // Sanitize input to prevent XSS
-        $sanitized = [
-            'customer_name'  => htmlspecialchars(trim($data['customer_name']), ENT_QUOTES, 'UTF-8'),
-            'customer_email' => trim($data['customer_email']),
-            'subject'        => htmlspecialchars(trim($data['subject']), ENT_QUOTES, 'UTF-8'),
-            'message'        => htmlspecialchars(trim($data['message']), ENT_QUOTES, 'UTF-8'),
-        ];
-
-        $id = $this->model->create($sanitized);
+        // Data is already sanitized by getPostData() — pass directly
+        $id = $this->model->create([
+            'customer_name'  => $data['customer_name'],
+            'customer_email' => $data['customer_email'],
+            'subject'        => $data['subject'],
+            'message'        => $data['message'],
+        ]);
         $this->jsonResponse([
             'id'      => $id,
             'message' => 'Contact submitted successfully. We will reply soon.',
@@ -61,6 +59,7 @@ class ContactController extends BaseController {
     public function index(): void {
         AuthMiddleware::requireAdmin();
 
+        // BẢN VÁ PHÂN TRANG
         $page = max(1, (int) ($_GET['page'] ?? 1));
         $limit = min(100, max(1, (int) ($_GET['limit'] ?? 10)));
         $filters = [

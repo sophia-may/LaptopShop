@@ -24,17 +24,16 @@ class ProductController extends BaseController {
      * Query params: page, limit, category_id, category_slug, brand_id, search, price_min, price_max
      */
     public function index(): void {
+        // BẢN VÁ PHÂN TRANG
         $page = max(1, (int) ($_GET['page'] ?? 1));
-        $limit = min(50, max(1, (int) ($_GET['limit'] ?? 12)));
+        $limit = min(100, max(1, (int) ($_GET['limit'] ?? 12)));
 
-        $filters = [
-            'category_id'   => $_GET['category_id'] ?? '',
-            'category_slug' => $_GET['category_slug'] ?? '',
-            'brand_id'      => $_GET['brand_id'] ?? '',
-            'search'        => $_GET['search'] ?? '',
-            'price_min'     => $_GET['price_min'] ?? '',
-            'price_max'     => $_GET['price_max'] ?? '',
-        ];
+        // Using the new pick() helper for safe and clean filter extraction
+        $filters = $this->pick($_GET, [
+            'category_id', 'category_slug', 'brand_id', 
+            'search', 'price_min', 'price_max',
+            'sort', 'dir'
+        ]);
 
         $result = $this->model->getPaginated($page, $limit, $filters);
         $this->jsonResponse($result);

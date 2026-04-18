@@ -58,7 +58,7 @@ class SiteSettingsController extends BaseController {
     public function update(string $key): void {
         AuthMiddleware::requireAdmin();
 
-        $data = $this->getPostData();
+        $data = $this->getPostData(['value']);
         $value = $data['value'] ?? '';
 
         if ($key === '') {

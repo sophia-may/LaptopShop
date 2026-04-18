@@ -53,12 +53,15 @@ class ContactModel extends BaseModel {
         $total = (int) $countStmt->fetchColumn();
 
         // Fetch
-        $params[] = $limit;
-        $params[] = $offset;
-        $stmt = $this->db->prepare(
-            "SELECT * FROM contacts WHERE $where ORDER BY created_at DESC LIMIT ? OFFSET ?"
-        );
-        $stmt->execute($params);
+        $sql = "SELECT * FROM contacts WHERE $where ORDER BY created_at DESC LIMIT ? OFFSET ?";
+        $stmt = $this->db->prepare($sql);
+        $i = 1;
+        foreach ($params as $param) {
+            $stmt->bindValue($i++, $param);
+        }
+        $stmt->bindValue($i++, $limit, PDO::PARAM_INT);
+        $stmt->bindValue($i++, $offset, PDO::PARAM_INT);
+        $stmt->execute();
         $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         return [
