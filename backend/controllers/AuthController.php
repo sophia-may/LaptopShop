@@ -29,7 +29,7 @@ class AuthController extends BaseController {
      * Register a new member account.
      */
     public function register(): void {
-        $data = $this->getPostData();
+        $data = $this->getPostData(['password', 'password_confirmation']);
 
         $errors = $this->validate($data, [
             'fullname' => 'required|min:2|max:100',
@@ -72,7 +72,7 @@ class AuthController extends BaseController {
      * Login as member. Returns JWT token + user info.
      */
     public function login(): void {
-        $data = $this->getPostData();
+        $data = $this->getPostData(['password']);
 
         $errors = $this->validate($data, [
             'email'    => 'required|email',
@@ -115,7 +115,7 @@ class AuthController extends BaseController {
      * Login as admin. Returns JWT token + admin info.
      */
     public function loginAdmin(): void {
-        $data = $this->getPostData();
+        $data = $this->getPostData(['password']);
 
         $errors = $this->validate($data, [
             'email'    => 'required|email',
@@ -128,18 +128,18 @@ class AuthController extends BaseController {
         $user = $this->userModel->findByEmail($data['email']);
 
         if (!$user || !password_verify($data['password'], $user['password_hash'])) {
-            $this->jsonError('Invalid credentials or not an admin.', 401);
+            $this->jsonError('Invalid email or password.', 401);
         }
 
         // Check if user is actually admin
         $role = $this->userModel->detectRole($user['id']);
         if ($role !== 'admin') {
-            $this->jsonError('Invalid credentials or not an admin.', 401);
+            $this->jsonError('Invalid email or password.', 401);
         }
 
         // Check is_active
         if (!$user['is_active']) {
-            $this->jsonError('Admin account has been locked.', 403);
+            $this->jsonError('Admin account has been locked. Please contact support.', 403);
         }
 
         $token = JwtHelper::generate(['id' => $user['id'], 'role' => 'admin']);
@@ -209,7 +209,7 @@ class AuthController extends BaseController {
      */
     public function changePassword(): void {
         $payload = AuthMiddleware::requireAuth();
-        $data = $this->getPostData();
+        $data = $this->getPostData(['old_password', 'new_password', 'confirm_password']);
 
         $errors = $this->validate($data, [
             'old_password'     => 'required',

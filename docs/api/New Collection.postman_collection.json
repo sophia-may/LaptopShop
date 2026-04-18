@@ -1,0 +1,314 @@
+{
+  "info": {
+    "_postman_id": "490458ff-f77d-4c47-a934-133e14742b0b",
+    "name": "New Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "54128439"
+  },
+  "item": [
+    {
+      "name": "auth/admin/login",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "email",
+              "value": "admin@laptop.vn",
+              "type": "text",
+              "uuid": "7d1a762d-5ad7-4ae6-8485-9942c7828370"
+            },
+            {
+              "key": "password",
+              "value": "Admin@123",
+              "type": "text",
+              "uuid": "8a1f81a3-2c36-40f4-8794-6593e0fab76e"
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost/LaptopWeb/backend/api/auth/admin/login",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "path": [
+            "LaptopWeb",
+            "backend",
+            "api",
+            "auth",
+            "admin",
+            "login"
+          ],
+          "query": [
+            {
+              "key": "email",
+              "value": "admin@laptop.vn",
+              "type": "text",
+              "disabled": true
+            },
+            {
+              "key": "password",
+              "value": "Admin@123",
+              "type": "text",
+              "disabled": true
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "cart/add",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6Miwicm9sZSI6Im1lbWJlciIsImlhdCI6MTc3NjUzMTUxNywiZXhwIjoxNzc3MTM2MzE3fQ.q_HziHp87td9eG-2LeYwYGobgKGQEVxGMet-IOQ6ZBU",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"variant_id\": 1, \"quantity\": 10}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost/LaptopWeb/backend/api/cart/add",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "path": [
+            "LaptopWeb",
+            "backend",
+            "api",
+            "cart",
+            "add"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "cart/clear",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6Miwicm9sZSI6Im1lbWJlciIsImlhdCI6MTc3NjUzMTUxNywiZXhwIjoxNzc3MTM2MzE3fQ.q_HziHp87td9eG-2LeYwYGobgKGQEVxGMet-IOQ6ZBU",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost/LaptopWeb/backend/api/cart/clear",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "path": [
+            "LaptopWeb",
+            "backend",
+            "api",
+            "cart",
+            "clear"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "orders/checkout",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6Miwicm9sZSI6Im1lbWJlciIsImlhdCI6MTc3NjUzMTUxNywiZXhwIjoxNzc3MTM2MzE3fQ.q_HziHp87td9eG-2LeYwYGobgKGQEVxGMet-IOQ6ZBU",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"shipping_address\": \"123 Đường Công Nghệ, Quận 1\",\r\n    \"payment_method\": \"cod\",\r\n    \"total_amount\": 1000\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost/LaptopWeb/backend/api/orders/checkout",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "path": [
+            "LaptopWeb",
+            "backend",
+            "api",
+            "orders",
+            "checkout"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "auth/profile",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6Miwicm9sZSI6Im1lbWJlciIsImlhdCI6MTc3NjUzMTUxNywiZXhwIjoxNzc3MTM2MzE3fQ.q_HziHp87td9eG-2LeYwYGobgKGQEVxGMet-IOQ6ZBU",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"fullname\": \"Tài Trần <script>alert('Hacked!')</script>\"\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost/LaptopWeb/backend/api/auth/profile",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "path": [
+            "LaptopWeb",
+            "backend",
+            "api",
+            "auth",
+            "profile"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "auth/me",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6Miwicm9sZSI6Im1lbWJlciIsImlhdCI6MTc3NjUzMTUxNywiZXhwIjoxNzc3MTM2MzE3fQ.q_HziHp87td9eG-2LeYwYGobgKGQEVxGMet-IOQ6ZBU",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost/LaptopWeb/backend/api/auth/me",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "path": [
+            "LaptopWeb",
+            "backend",
+            "api",
+            "auth",
+            "me"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "products",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6Miwicm9sZSI6Im1lbWJlciIsImlhdCI6MTc3NjUzMTUxNywiZXhwIjoxNzc3MTM2MzE3fQ.q_HziHp87td9eG-2LeYwYGobgKGQEVxGMet-IOQ6ZBU",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost/LaptopWeb/backend/api/products",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "path": [
+            "LaptopWeb",
+            "backend",
+            "api",
+            "products"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "members",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzc2NTMyNjkzLCJleHAiOjE3NzcxMzc0OTN9.z9Xf0mVKrmEd7WFkh9adR9wgPEquAsfDewW4f7Gybh8",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost/LaptopWeb/backend/api/admin/members",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "path": [
+            "LaptopWeb",
+            "backend",
+            "api",
+            "admin",
+            "members"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

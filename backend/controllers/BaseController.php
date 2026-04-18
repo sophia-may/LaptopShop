@@ -44,18 +44,22 @@ class BaseController {
 
     /**
      * Parse and sanitize request body from JSON or fallback to $_POST.
+     * Respects OCP: Knowledge of specific fields (like password) belongs to the caller.
      *
-     * @param array $excludeFields Keys that should NOT be sanitized (e.g. ['content', 'detail_description'])
+     * @param array $excludeFields Keys that should NOT be sanitized (e.g. ['password', 'content'])
      * @return array
      */
     protected function getPostData(array $excludeFields = []): array {
-        $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+        $contentType = isset($_SERVER['CONTENT_TYPE']) ? trim($_SERVER['CONTENT_TYPE']) : '';
         $data = [];
 
+        // Explicit Content-Type routing (Anti-Blind-Merging)
         if (strpos($contentType, 'application/json') !== false) {
-            $json = json_decode(file_get_contents('php://input'), true);
+            $input = file_get_contents('php://input');
+            $json = json_decode($input, true);
             $data = is_array($json) ? $json : [];
         } else {
+            // Fallback to traditional $_POST
             $data = $_POST;
         }
 
@@ -170,28 +174,32 @@ class BaseController {
                 // min:N
                 if (strpos($rule, 'min:') === 0 && $hasValue) {
                     $min = (int) substr($rule, 4);
-                    // BẢN VÁ CRASH: Chỉ check mb_strlen nếu là string
-                    if (!is_string($value)) {
-                        $errors[$field] = ucfirst(str_replace('_', ' ', $field)) . " must be a valid text string.";
-                        break;
-                    }
-                    if (mb_strlen($value) < $min) {
-                        $errors[$field] = ucfirst(str_replace('_', ' ', $field)) . " must be at least $min characters.";
-                        break;
+                    if (is_numeric($value)) {
+                        if ($value < $min) {
+                            $errors[$field] = ucfirst(str_replace('_', ' ', $field)) . " must be at least $min.";
+                            break;
+                        }
+                    } else {
+                        if (mb_strlen((string)$value) < $min) {
+                            $errors[$field] = ucfirst(str_replace('_', ' ', $field)) . " must be at least $min characters.";
+                            break;
+                        }
                     }
                 }
 
                 // max:N
                 if (strpos($rule, 'max:') === 0 && $hasValue) {
                     $max = (int) substr($rule, 4);
-                    // BẢN VÁ CRASH: Chỉ check mb_strlen nếu là string
-                    if (!is_string($value)) {
-                        $errors[$field] = ucfirst(str_replace('_', ' ', $field)) . " must be a valid text string.";
-                        break;
-                    }
-                    if (mb_strlen($value) > $max) {
-                        $errors[$field] = ucfirst(str_replace('_', ' ', $field)) . " must be at most $max characters.";
-                        break;
+                    if (is_numeric($value)) {
+                        if ($value > $max) {
+                            $errors[$field] = ucfirst(str_replace('_', ' ', $field)) . " must be at most $max.";
+                            break;
+                        }
+                    } else {
+                        if (mb_strlen((string)$value) > $max) {
+                            $errors[$field] = ucfirst(str_replace('_', ' ', $field)) . " must be at most $max characters.";
+                            break;
+                        }
                     }
                 }
 

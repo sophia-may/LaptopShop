@@ -53,7 +53,7 @@ class AdminProductController extends BaseController {
      */
     public function store(): void {
         AuthMiddleware::requireAdmin();
-        $data = $this->getPostData();
+        $data = $this->getPostData(['detail_description']);
 
         $errors = $this->validate($data, [
             'name' => 'required',
@@ -92,7 +92,7 @@ class AdminProductController extends BaseController {
      */
     public function update(string $id): void {
         AuthMiddleware::requireAdmin();
-        $data = $this->getPostData();
+        $data = $this->getPostData(['detail_description']);
 
         $success = $this->model->update((int)$id, $data);
         if ($success) {

@@ -184,7 +184,7 @@ CREATE TABLE IF NOT EXISTS articles (
     meta_keywords    VARCHAR(255) DEFAULT NULL,
     thumbnail_url    VARCHAR(255) DEFAULT NULL,
     created_at       TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
-    published_at     TIMESTAMP    DEFAULT NULL,
+    published_at     TIMESTAMP    NULL DEFAULT NULL,
     FOREIGN KEY (admin_id) REFERENCES admins(user_id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

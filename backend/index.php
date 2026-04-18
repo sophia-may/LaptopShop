@@ -46,8 +46,14 @@ JwtHelper::init();
 // 4. Parse URI and Method
 // ============================================================
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-// Strip backend prefix if running via apache virtual host (e.g. /backend/index.php/api/...)
-$uri = preg_replace('#^/backend/index\.php#', '', $uri);
+
+// Automatically detect and strip base path for subdirectory support (e.g. XAMPP)
+$scriptPath = $_SERVER['SCRIPT_NAME'];
+$basePath = str_replace('index.php', '', $scriptPath);
+
+if (strpos($uri, $basePath) === 0) {
+    $uri = '/' . ltrim(substr($uri, strlen($basePath)), '/');
+}
 // Ensure leading slash, remove trailing slash (except root)
 $uri = '/' . trim($uri, '/');
 if ($uri !== '/') {

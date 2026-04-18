@@ -32,14 +32,14 @@ INSERT INTO membership_tiers (id, name, min_points, discount_percent) VALUES
 -- avatar_url and is_active are now part of users table
 INSERT INTO users (id, fullname, email, phone, password_hash, avatar_url, is_active) VALUES
 (1, 'Super Admin',  'admin@laptop.vn', '0901234567',
-    '$2y$10$0p2OqC4Vb8N7o2yvE/.Emu7Gz1ZJ6/mFv5jX93H8d5C7j0a4X4I2W', NULL, 1),
+    '$2y$10$nGmmkhAr/YzdE25rN6NjGOOX9.SP0VcsdOrHudf3syYuXpmXvS11e', NULL, 1),
 (2, 'Nguyen Van A', 'nva@gmail.com',   '0912345678',
-    '$2y$10$0p2OqC4Vb8N7o2yvE/.Emu7Gz1ZJ6/mFv5jX93H8d5C7j0a4X4I2W', NULL, 1),
+    '$2y$10$nGmmkhAr/YzdE25rN6NjGOOX9.SP0VcsdOrHudf3syYuXpmXvS11e', NULL, 1),
 (3, 'Tran Thi B',   'ttb@gmail.com',   '0923456789',
-    '$2y$10$0p2OqC4Vb8N7o2yvE/.Emu7Gz1ZJ6/mFv5jX93H8d5C7j0a4X4I2W', NULL, 1),
+    '$2y$10$nGmmkhAr/YzdE25rN6NjGOOX9.SP0VcsdOrHudf3syYuXpmXvS11e', NULL, 1),
 -- User 4 is banned (is_active = 0) to demo the ban feature
 (4, 'Le Van C',     'lvc@gmail.com',   '0934567890',
-    '$2y$10$0p2OqC4Vb8N7o2yvE/.Emu7Gz1ZJ6/mFv5jX93H8d5C7j0a4X4I2W', NULL, 0);
+    '$2y$10$nGmmkhAr/YzdE25rN6NjGOOX9.SP0VcsdOrHudf3syYuXpmXvS11e', NULL, 0);
 
 INSERT INTO admins (user_id) VALUES (1);
 
