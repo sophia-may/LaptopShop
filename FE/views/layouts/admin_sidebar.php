@@ -25,7 +25,7 @@ $currentPage = $_GET['page'] ?? 'admin_dashboard';
                     <li class="<?= $currentPage === 'manage_profile' ? 'active' : '' ?>">
                         <a href="?page=manage_profile" aria-expanded="true"><i class="ti-user"></i><span>Customers</span></a>
                     </li>
-                    <li class="<?= $currentPage === 'manage_reviews' || $currentPage === 'admin_reviews' ? 'active' : '' ?>">
+                    <li class="<?= $currentPage === 'admin_reviews' || $currentPage === 'admin_reviews' ? 'active' : '' ?>">
                         <a href="?page=admin_reviews" aria-expanded="true"><i class="ti-star"></i><span>Reviews</span></a>
                     </li>
                     <li class="<?= $currentPage === 'manage_qna' ? 'active' : '' ?>">

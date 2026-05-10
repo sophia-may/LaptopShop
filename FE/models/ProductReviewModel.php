@@ -11,7 +11,7 @@ class ProductReviewModel extends BaseModel {
      */
     public function createReview($data) {
         try {
-            $sql = "INSERT INTO product_reviews 
+            $sql = "INSERT INTO reviews 
                     (product_id, user_id, rating, review_title, review_text, review_images, is_verified_purchase) 
                     VALUES (:product_id, :user_id, :rating, :review_title, :review_text, :review_images, :is_verified_purchase)";
             
@@ -65,7 +65,7 @@ class ProductReviewModel extends BaseModel {
     public function hasUserReviewedProduct($userId, $productId) {
         try {
             $sql = "SELECT COUNT(*) as count 
-                    FROM product_reviews 
+                    FROM reviews 
                     WHERE user_id = :user_id AND product_id = :product_id";
             
             $stmt = $this->db->prepare($sql);
@@ -90,7 +90,7 @@ class ProductReviewModel extends BaseModel {
         $query = "SELECT 
                     r.*,
                     u.fullname as user_name
-                  FROM product_reviews r
+                  FROM reviews r
                   LEFT JOIN users u ON r.user_id = u.id
                   WHERE r.product_id = ?
                   AND r.is_approved = 1
@@ -126,7 +126,7 @@ class ProductReviewModel extends BaseModel {
                     SUM(CASE WHEN rating = 3 THEN 1 ELSE 0 END) as three_star,
                     SUM(CASE WHEN rating = 2 THEN 1 ELSE 0 END) as two_star,
                     SUM(CASE WHEN rating = 1 THEN 1 ELSE 0 END) as one_star
-                    FROM product_reviews 
+                    FROM reviews 
                     WHERE product_id = :product_id AND is_approved = 1";
             
             $stmt = $this->db->prepare($sql);
@@ -149,7 +149,7 @@ class ProductReviewModel extends BaseModel {
             $sql = "SELECT pr.*, u.fullname as user_name, u.email as user_email, 
                     p.name as product_name, 
                     (SELECT img_url FROM product_variants WHERE product_id = p.id AND img_url IS NOT NULL LIMIT 1) as product_image 
-                    FROM product_reviews pr
+                    FROM reviews pr
                     INNER JOIN users u ON pr.user_id = u.id
                     INNER JOIN products p ON pr.product_id = p.id
                     WHERE 1=1";
@@ -200,7 +200,7 @@ class ProductReviewModel extends BaseModel {
     public function countReviews($filters = []) {
         try {
             $sql = "SELECT COUNT(*) as total 
-                    FROM product_reviews pr
+                    FROM reviews pr
                     INNER JOIN users u ON pr.user_id = u.id
                     INNER JOIN products p ON pr.product_id = p.id
                     WHERE 1=1";
@@ -245,7 +245,7 @@ class ProductReviewModel extends BaseModel {
                     p.name as product_name, 
                     (SELECT img_url FROM product_variants WHERE product_id = p.id AND img_url IS NOT NULL LIMIT 1) as product_image,
                     (SELECT base_price FROM product_variants WHERE product_id = p.id ORDER BY base_price ASC LIMIT 1) as product_price
-                    FROM product_reviews pr
+                    FROM reviews pr
                     INNER JOIN users u ON pr.user_id = u.id
                     INNER JOIN products p ON pr.product_id = p.id
                     WHERE pr.id = :id";
@@ -265,7 +265,7 @@ class ProductReviewModel extends BaseModel {
      */
     public function approveReview($id) {
         try {
-            $sql = "UPDATE product_reviews SET is_approved = 1 WHERE id = :id";
+            $sql = "UPDATE reviews SET is_approved = 1 WHERE id = :id";
             $stmt = $this->db->prepare($sql);
             return $stmt->execute([':id' => $id]);
         } catch (PDOException $e) {
@@ -279,7 +279,7 @@ class ProductReviewModel extends BaseModel {
      */
     public function rejectReview($id) {
         try {
-            $sql = "UPDATE product_reviews SET is_approved = 0 WHERE id = :id";
+            $sql = "UPDATE reviews SET is_approved = 0 WHERE id = :id";
             $stmt = $this->db->prepare($sql);
             return $stmt->execute([':id' => $id]);
         } catch (PDOException $e) {
@@ -293,7 +293,7 @@ class ProductReviewModel extends BaseModel {
      */
     public function replyToReview($id, $replyText) {
         try {
-            $sql = "UPDATE product_reviews 
+            $sql = "UPDATE reviews 
                     SET admin_reply = :reply, admin_reply_at = NOW() 
                     WHERE id = :id";
             $stmt = $this->db->prepare($sql);
@@ -325,7 +325,7 @@ class ProductReviewModel extends BaseModel {
                 }
             }
             
-            $sql = "DELETE FROM product_reviews WHERE id = :id";
+            $sql = "DELETE FROM reviews WHERE id = :id";
             $stmt = $this->db->prepare($sql);
             return $stmt->execute([':id' => $id]);
         } catch (PDOException $e) {
@@ -340,7 +340,7 @@ class ProductReviewModel extends BaseModel {
     public function bulkApproveReviews($ids) {
         try {
             $placeholders = str_repeat('?,', count($ids) - 1) . '?';
-            $sql = "UPDATE product_reviews SET is_approved = 1 WHERE id IN ($placeholders)";
+            $sql = "UPDATE reviews SET is_approved = 1 WHERE id IN ($placeholders)";
             $stmt = $this->db->prepare($sql);
             return $stmt->execute($ids);
         } catch (PDOException $e) {
@@ -369,7 +369,7 @@ class ProductReviewModel extends BaseModel {
             }
             
             $placeholders = str_repeat('?,', count($ids) - 1) . '?';
-            $sql = "DELETE FROM product_reviews WHERE id IN ($placeholders)";
+            $sql = "DELETE FROM reviews WHERE id IN ($placeholders)";
             $stmt = $this->db->prepare($sql);
             return $stmt->execute($ids);
             } catch (PDOException $e) {
@@ -386,7 +386,7 @@ public function getAllReviewsAdmin($status = 'all', $limit = 20, $offset = 0) {
                 u.email as user_email,
                 p.name as product_name,
                 (SELECT img_url FROM product_variants WHERE product_id = p.id AND img_url IS NOT NULL LIMIT 1) as product_image
-            FROM product_reviews pr
+            FROM reviews pr
             JOIN users u ON pr.user_id = u.id
             JOIN products p ON pr.product_id = p.id";
     
@@ -410,7 +410,7 @@ public function getAllReviewsAdmin($status = 'all', $limit = 20, $offset = 0) {
 }
 
 public function countReviewsByStatus($status = 'all') {
-    $sql = "SELECT COUNT(*) as count FROM product_reviews";
+    $sql = "SELECT COUNT(*) as count FROM reviews";
     
     if ($status !== 'all') {
         $sql .= " WHERE status = :status";
@@ -430,7 +430,7 @@ public function countReviewsByStatus($status = 'all') {
 
 public function updateReviewStatus($reviewId, $status) {
     $isApproved = ($status === 'approved') ? 1 : 0;
-    $sql = "UPDATE product_reviews 
+    $sql = "UPDATE reviews 
             SET status = :status, 
                 is_approved = :is_approved 
             WHERE id = :id";    $stmt = $this->db->prepare($sql);

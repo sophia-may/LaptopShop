@@ -239,9 +239,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
                         
                         <div class="product-image-wrapper">
                             <?php 
-                                $imgUrl = (strpos($product['image'], 'http') === 0) 
-                                    ? $product['image'] 
-                                    : 'assets/img/' . $product['image']; 
+                                $imgUrl = 'assets/img/products/' . $product['name']. '.jpg'; 
                             ?>
                             <a href="?page=product&id=<?= $product['id'] ?>" class="product-image-link">
                                 <img src="<?= htmlspecialchars($imgUrl) ?>" 

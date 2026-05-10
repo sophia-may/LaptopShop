@@ -29,7 +29,7 @@ class ProductController {
         $productImages = $productModel->getProductImages($productId);
         if (empty($productImages)) {
             $productImages = [[
-                'image_url'     => $product['image'],
+                'image_url'     => 'assets/img/products/' . $product['name']. '.jpg'; 
                 'is_primary'    => 1,
                 'display_order' => 0
             ]];

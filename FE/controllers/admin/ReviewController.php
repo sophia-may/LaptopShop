@@ -33,6 +33,6 @@ class ReviewController {
             'rejected' => $this->reviewModel->countReviewsByStatus('rejected')
         ];
 
-        include 'views/admin/manage_reviews.php';
+        include 'views/admin/admin_reviews.php';
     }
 }

@@ -76,7 +76,7 @@ switch ($page) {
         $controller = new ProductAdminController();
         $controller->index();
         break;
-    case 'manage_reviews':
+    case 'admin_reviews':
         require_once 'controllers/admin/ReviewController.php';
         $controller = new ReviewController();
         $controller->index();

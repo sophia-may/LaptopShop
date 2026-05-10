@@ -44,7 +44,7 @@
                                     <tr>
                                         <td>
                                             <?php 
-                                            $imageSrc = htmlspecialchars($product['image']);
+                                            $imageSrc =  'assets/img/products/' . $product['name']. '.jpg';
                                             // Check if it's a local path or URL
                                             if (!empty($imageSrc) && (strpos($imageSrc, 'http') === 0 || file_exists($imageSrc))) {
                                                 echo '<img src="' . $imageSrc . '" alt="' . htmlspecialchars($product['name']) . '" style="width: 50px; height: 50px; object-fit: cover;">';
@@ -65,10 +65,10 @@
                                         </td>
                                         <td><?= htmlspecialchars($product['category']) ?></td>
                                         <td>
-                                            <button class="btn btn-sm btn-warning" onclick="editProduct(<?= $product['id'] ?>)">
+                                            <button class="btn btn-sm btn-warning" onclick="editProduct(<?= $product['id'] ?>)">Edit
                                                 <i class="bi bi-pencil"></i>
                                             </button>
-                                            <button class="btn btn-sm btn-danger" onclick="deleteProduct(<?= $product['id'] ?>)">
+                                            <button class="btn btn-sm btn-danger" onclick="deleteProduct(<?= $product['id'] ?>)">Delete
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </td>

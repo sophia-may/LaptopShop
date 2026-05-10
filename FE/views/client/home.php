@@ -21,11 +21,12 @@ include 'views/layouts/header.php';
                         ['src' => 'https://dashboard.cellphones.com.vn/storage/icon-homepage-trade-in.svg', 'parts' => [['text'=>'Thu cũ đổi mới', 'href'=>'#']]],
                         ['src' => 'https://dashboard.cellphones.com.vn/storage/icon-homepage-used-goods.svg', 'parts' => [['text'=>'Hàng cũ', 'href'=>'#']]],
                         ['src' => 'https://dashboard.cellphones.com.vn/storage/icon-homepage-promotions.svg', 'parts' => [['text'=>'Khuyến mãi', 'href'=>'#']]],
-                        ['src' => 'https://dashboard.cellphones.com.vn/storage/icon-homepage-tech-news.svg', 'parts' => [['text'=>'Tin công nghệ', 'href'=>'#']]]
+                        ['src' => 'https://dashboard.cellphones.com.vn/storage/icon-homepage-tech-news.svg', 'parts' => [['text'=>'Tin công nghệ', 'href'=>'#']]],
+                        ['src' => 'assets/img/qna.svg', 'parts' => [['text'=>'Hỏi đáp', 'href'=>'http://localhost/LaptopWeb/FE/index.php?page=qna']]]
                     ];
                     
                     foreach ($leftCats as $c): ?>
-                    <div class="group flex h-10 cursor-pointer items-center px-3 hover:bg-neutral-100 d-flex align-items-center category-item" onclick="window.location.href='index.php?page=shop'">
+                    <div class="group flex h-10 cursor-pointer items-center px-3 hover:bg-neutral-100 d-flex align-items-center category-item" onclick="if(event.target.tagName !== 'A') window.location.href='index.php?page=shop'">
                         <img alt="Category" loading="lazy" width="28" height="28" decoding="async" class="mr-2" src="<?= $c['src'] ?>" />
                         <div class="d-flex align-items-center parts-wrapper w-100">
                             <span class="text-xs font-semibold text-truncate d-block w-100">
@@ -53,38 +54,51 @@ include 'views/layouts/header.php';
                             </div>
                             <h2 class="hero-title fw-bold text-dark">TECNO SPARK Go 3</h2>
                             <p class="hero-sub text-muted">Bền Mượt 4 Năm • 5000mAh • Sạc nhanh 15W</p>
-                            <div class="d-flex align-items-center gap-3 mt-3">
+
+                            <div class="d-flex align-items-center justify-content-center gap-3 mt-3">
+                                <img src="assets/img/shop_banner.jpg" alt="TECNO" style="max-width: 300px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                            </div>
+                            <div class="d-flex align-items-center justify-content-center gap-3 mt-3">
                                 <div class="price-box">
+                                    <div class="price-note text-muted small">Giá chỉ từ</div>
                                     <div class="price">3.49 Triệu</div>
-                                    <div class="price-note text-muted small">Giá từ</div>
+                                    
                                 </div>
+                                
                                 <a href="index.php?page=shop" class="btn btn-danger px-4 py-2 fw-bold" style="border-radius: 8px;">MUA NGAY</a>
+                                
                             </div>
                         </div>
-                        <div class="hero-image ms-3 flex-shrink-0 d-none d-sm-block">
-                            <!-- Placeholder cho ảnh hero -->
-                            <img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:690:300/q:90/plain/https://dashboard.cellphones.com.vn/storage/b2s-2024-sliding-sv-gia-soc.png" alt="TECNO" style="max-width: 300px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-                        </div>
+
                     </div>
                 </div>
 
                 <div class="row small-cards g-3">
                     <div class="col-md-4 col-4">
-                        <div class="card small-card p-2 text-center h-100 border-0">
-                            <div class="fw-bold" style="font-size: 13px;">MacBook Pro</div>
-                            <small class="text-muted" style="font-size: 11px;">Nay với M5</small>
+                        <div class="card small-card p-2 text-center h-100 border-0" style="background-image: url('assets/img/products/MacBook Air M2.jpg'); background-size: cover; background-position: center; border-radius: 12px; position: relative; min-height: 140px; display: flex; align-items: center; justify-content: center;">
+                            <div style="position: absolute; inset: 0; background: rgba(0, 0, 0, 0.4); border-radius: 12px;"></div>
+                            <div style="position: relative; z-index: 1;">
+                                <div class="fw-bold text-white" style="font-size: 13px;">MacBook Pro</div>
+                                <small class="text-white-50" style="font-size: 11px;">Nay với M5</small>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-4 col-4">
-                        <div class="card small-card p-2 text-center h-100 border-0">
-                            <div class="fw-bold" style="font-size: 13px;">Galaxy A17 5G</div>
-                            <small class="text-muted" style="font-size: 11px;">Ưu đãi</small>
+                        <div class="card small-card p-2 text-center h-100 border-0" style="background-image: url('assets/img/products/Galaxy A17.jpg'); background-size: cover; background-position: center; border-radius: 12px; position: relative; min-height: 140px; display: flex; align-items: center; justify-content: center;">
+                            <div style="position: absolute; inset: 0; background: rgba(0, 0, 0, 0.4); border-radius: 12px;"></div>
+                            <div style="position: relative; z-index: 1;">
+                                <div class="fw-bold text-white" style="font-size: 13px;">Galaxy A17 5G</div>
+                                <small class="text-white-50" style="font-size: 11px;">Ưu đãi</small>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-4 col-4">
-                        <div class="card small-card p-2 text-center h-100 border-0">
-                            <div class="fw-bold" style="font-size: 13px;">Mua Laptop Online</div>
-                            <small class="text-muted" style="font-size: 11px;">Giảm thêm 5 Triệu</small>
+                        <div class="card small-card p-2 text-center h-100 border-0" style="background-image: url('assets/img/products/Asus ROG Strix G15.jpg'); background-size: cover; background-position: center; border-radius: 12px; position: relative; min-height: 140px; display: flex; align-items: center; justify-content: center;">
+                            <div style="position: absolute; inset: 0; background: rgba(0, 0, 0, 0.4); border-radius: 12px;"></div>
+                            <div style="position: relative; z-index: 1;">
+                                <div class="fw-bold text-white" style="font-size: 13px;">Mua Laptop Online</div>
+                                <small class="text-white-50" style="font-size: 11px;">Giảm thêm 5 Triệu</small>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -118,7 +132,7 @@ include 'views/layouts/header.php';
                 </div>
                 
                 <div class="mt-3">
-                    <img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:358:358/q:90/plain/https://dashboard.cellphones.com.vn/storage/right-banner-14-11.jpg" class="img-fluid rounded" alt="Banner right">
+                    <img src="assets/img/banner right.jpg" class="img-fluid rounded" alt="Banner right">
                 </div>
             </aside>
         </div>

@@ -108,7 +108,7 @@ include 'views/layouts/admin_header.php';
                     </div>
                 </div>
                 <!-- Placeholder for the traffic analysis image/chart as requested -->
-                <div class="border rounded text-center bg-light" style="height: 300px; display: flex; flex-direction: column; justify-content: flex-end; padding: 20px; background-image: url('assets/img/hero-bg.png'); background-size: cover; background-position: center; position: relative;">
+                <div class="border rounded text-center bg-light" style="height: 300px; display: flex; flex-direction: column; justify-content: flex-end; padding: 20px; background-image: url('assets/img/hero-bg.jpg'); background-size: cover; background-position: center; position: relative;">
                      <div style="position: absolute; bottom: 10px; left: 10px; background: rgba(255,255,255,0.8); padding: 5px 10px; border-radius: 5px; font-weight: 500;">
                          <i class="ti-stats-up text-success"></i> Traffic increased by 22% compared to last week.
                      </div>

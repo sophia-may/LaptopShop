@@ -1,618 +1,401 @@
 <?php 
 // File: views/client/product_detail.php
 include 'views/layouts/header.php'; 
+$product = $product ?? [];
+$productImages = $productImages ?? [];
+$variants = $variants ?? ['storage' => [], 'color' => [], 'ram' => []];
+$displayPrice = $displayPrice ?? ($product['price'] ?? 0);
+$averageRating = $averageRating ?? 0;
+$reviewCount = $reviewCount ?? 0;
+$reviews = $reviews ?? [];
+$reviewStats = $reviewStats ?? null;
 function numberToWords($num) {
     $words = ['', 'one', 'two', 'three', 'four', 'five'];
     return $words[$num] ?? '';
 }
 ?>
-<!-- ============================================
-     BREADCRUMB SECTION
-     ============================================ -->
-<section class="breadcrumb-section py-3 bg-light">
+<style>
+    .pd-page {
+        background: #f7f7f9;
+    }
+
+    .pd-top {
+        background: #fff;
+        border-radius: 16px;
+        padding: 20px;
+        border: 1px solid #eceef2;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+    }
+
+    .pd-main-image-wrap {
+        background: #f5f7fa;
+        border: 1px solid #e8ebf1;
+        border-radius: 12px;
+        padding: 10px;
+    }
+
+    .pd-main-image {
+        width: 100%;
+        max-height: 360px;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+
+    .pd-thumb {
+        width: 88px;
+        height: 62px;
+        border-radius: 8px;
+        object-fit: cover;
+        border: 2px solid #e9edf4;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .pd-thumb.active {
+        border-color: #dc2626;
+        box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.12);
+    }
+
+    .pd-badge {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.8px;
+        color: #dc2626;
+        background: #fee2e2;
+        padding: 4px 8px;
+        border-radius: 6px;
+        margin-bottom: 8px;
+    }
+
+    .pd-title {
+        font-size: clamp(1.8rem, 3vw, 2.9rem);
+        line-height: 1.1;
+        font-weight: 800;
+        color: #111827;
+        margin-bottom: 10px;
+    }
+
+    .pd-desc {
+        color: #4b5563;
+        font-size: 0.95rem;
+        margin-bottom: 18px;
+    }
+
+    .pd-config-block {
+        border-top: 1px solid #e5e7eb;
+        padding-top: 14px;
+        margin-top: 14px;
+    }
+
+    .pd-config-label {
+        font-size: 12px;
+        font-weight: 700;
+        color: #374151;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+    }
+
+    .pd-option {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 84px;
+        padding: 8px 12px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        background: #fff;
+        color: #111827;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-check:checked + .pd-option,
+    .pd-option:hover {
+        border-color: #dc2626;
+        color: #dc2626;
+        background: #fff5f5;
+    }
+
+    .pd-price {
+        color: #dc2626;
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 800;
+        line-height: 1;
+        margin-top: 12px;
+    }
+
+    .pd-old-price {
+        color: #6b7280;
+        font-size: 0.9rem;
+    }
+
+    .pd-rating {
+        border-top: 1px solid #e5e7eb;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 10px 0;
+        margin-top: 12px;
+    }
+
+    .pd-color-swatch {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: 2px solid #d1d5db;
+        display: inline-block;
+        cursor: pointer;
+    }
+
+    .color-swatch.active-color,
+    .pd-color-swatch:hover {
+        border-color: #dc2626;
+        box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+    }
+
+    .pd-specs {
+        margin-top: 22px;
+        background: #fff;
+        border-radius: 14px;
+        border: 1px solid #eceef2;
+        overflow: hidden;
+    }
+
+    .pd-specs-head {
+        padding: 16px 18px;
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #111827;
+        border-bottom: 2px solid #ef4444;
+        background: #fff;
+    }
+
+    .pd-specs table {
+        margin-bottom: 0;
+    }
+
+    .pd-specs th,
+    .pd-specs td {
+        padding: 14px 16px;
+        vertical-align: middle;
+        border-color: #edf1f5;
+    }
+
+    .pd-specs th {
+        width: 33%;
+        background: #fafafa;
+        color: #374151;
+        font-weight: 700;
+    }
+
+    .pd-bottom-bar {
+        position: sticky;
+        bottom: 0;
+        z-index: 20;
+        background: #fff;
+        border-top: 1px solid #e5e7eb;
+        box-shadow: 0 -6px 20px rgba(15, 23, 42, 0.06);
+    }
+
+    @media (max-width: 991px) {
+        .pd-bottom-bar {
+            position: static;
+            margin-top: 16px;
+            border-radius: 12px;
+            border: 1px solid #eceef2;
+        }
+    }
+</style>
+
+<section class="breadcrumb-section py-3 bg-white border-bottom">
     <div class="container">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item">
-                    <a href="?page=home">Home</a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a href="?page=shop">Shop</a>
-                </li>
-                <li class="breadcrumb-item active" aria-current="page">
-                    <?= htmlspecialchars($product['name']) ?>
-                </li>
+                <li class="breadcrumb-item"><a href="?page=home">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a href="?page=shop">Danh mục</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><?= htmlspecialchars($product['name'] ?? 'Product') ?></li>
             </ol>
         </nav>
     </div>
 </section>
 
-<!-- ============================================
-     PRODUCT DETAIL SECTION
-     ============================================ -->
-<section class="product-detail-section py-5">
+<section class="product-detail-section py-4 pd-page">
     <div class="container">
-        <div class="row">
-            
-            <!-- ============ LEFT: PRODUCT IMAGES ============ -->
-            <div class="col-lg-6 mb-4">
-                <div class="product-images-wrapper">
-                    <!-- Main Image Display -->
-                    <div class="main-image-container mb-3">
-                        <img src="<?= htmlspecialchars($productImages[0]['image_url']) ?>" 
-                             alt="<?= htmlspecialchars($product['name']) ?>" 
-                             class="img-fluid rounded shadow-sm"
+        <div class="pd-top">
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="pd-main-image-wrap mb-2">
+                        <?php $firstImage = !empty($productImages[0]['image_url']) ? $productImages[0]['image_url'] : ($product['image'] ?? ''); ?>
+                        <img src="<?= htmlspecialchars($firstImage) ?>"
+                             alt="<?= htmlspecialchars($product['name'] ?? 'Product image') ?>"
                              id="mainProductImage"
-                             class="main-product-img">
+                             class="pd-main-image">
                     </div>
-                    
-                    <!-- Thumbnail Images Gallery -->
-                    <div class="thumbnail-gallery d-flex gap-2 flex-wrap">
+
+                    <div class="d-flex gap-2 flex-wrap">
                         <?php foreach ($productImages as $index => $image): ?>
-                            <div class="thumbnail-item">
-                                <img src="<?= htmlspecialchars($image['image_url']) ?>" 
-                                     alt="Product view <?= $index + 1 ?>" 
-                                     class="img-thumbnail <?= $index === 0 ? 'active' : '' ?>"
-                                     style="width: 80px; height: 80px; object-fit: cover; cursor: pointer;"
-                                     onclick="changeMainImage('<?= htmlspecialchars($image['image_url']) ?>', this)"
-                                     data-index="<?= $index ?>">
-                            </div>
+                            <img src="<?= htmlspecialchars($image['image_url']) ?>"
+                                 alt="Product view <?= $index + 1 ?>"
+                                 class="pd-thumb <?= $index === 0 ? 'active' : '' ?>"
+                                 onclick="changeMainImage('<?= htmlspecialchars($image['image_url']) ?>', this)"
+                                 data-index="<?= $index ?>">
                         <?php endforeach; ?>
                     </div>
                 </div>
-            </div>
-            
-            <!-- ============ RIGHT: PRODUCT INFO ============ -->
-            <div class="col-lg-6">
-                <div class="product-info-wrapper">
-                    
-                    <!-- Product Title -->
-                    <h1 class="product-title mb-3 fw-bold">
-                        <?= htmlspecialchars($product['name']) ?>
-                    </h1>
-                    
-                    <!-- Brand Badge -->
-                    <div class="product-brand mb-3">
-                        <span class="badge bg-secondary">
-                            <i class="bi bi-tag-fill"></i> <?= htmlspecialchars($product['brand']) ?>
-                        </span>
-                    </div>
-                    
-                    <!-- Price Display -->
-                    <div class="product-pricing mb-3">
-                        <h2 class="price-display text-primary fw-bold mb-0" id="displayPrice">
-                            <?= number_format($displayPrice, 0, ',', '.') ?>đ
-                        </h2>
-                        <small class="text-muted">Base price: <?= number_format($product['price'], 0, ',', '.') ?>đ</small>
-                    </div>
-                    
-                    <!-- ✅ Rating & Reviews - ĐÃ SỬA -->
-                    <div class="product-rating mb-4 d-flex align-items-center gap-3 border-top border-bottom py-3">
-                        <div class="stars-display text-warning fs-5">
-                            <?php
-                            $fullStars = floor($averageRating);
-                            $halfStar = ($averageRating - $fullStars) >= 0.5 ? 1 : 0;
-                            $emptyStars = 5 - $fullStars - $halfStar;
-                            
-                            for ($i = 0; $i < $fullStars; $i++) {
-                                echo '<i class="bi bi-star-fill"></i>';
-                            }
-                            if ($halfStar) {
-                                echo '<i class="bi bi-star-half"></i>';
-                            }
-                            for ($i = 0; $i < $emptyStars; $i++) {
-                                echo '<i class="bi bi-star"></i>';
-                            }
-                            ?>
-                        </div>
-                        <div class="rating-text">
-                            <strong><?= number_format($averageRating, 1) ?></strong>
-                            <span class="text-muted">(<?= $reviewCount ?> reviews)</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Short Description -->
-                    <div class="product-description mb-4">
-                        <p class="text-muted">
-                            <?= htmlspecialchars($product['description']) ?>
-                        </p>
-                    </div>
-                    
-                    <!-- ============ STORAGE VARIANTS ============ -->
+
+                <div class="col-lg-6">
+                    <h1 class="pd-title"><?= htmlspecialchars($product['name'] ?? 'Product') ?></h1>
+                    <p class="pd-desc"><?= htmlspecialchars($product['description'] ?? '') ?></p>
+
+                    <h5 class="fw-bold mb-1">Cấu hình</h5>
+
                     <?php if (!empty($variants['storage'])): ?>
-                        <div class="variant-section mb-4">
-                            <h6 class="variant-label fw-bold mb-2">
-                                <i class="bi bi-hdd-fill text-primary"></i> Storage:
-                            </h6>
-                            <div class="btn-group flex-wrap" role="group" id="storageVariants">
+                        <div class="pd-config-block">
+                            <div class="pd-config-label">Dung lượng</div>
+                            <div class="d-flex gap-2 flex-wrap" id="storageVariants">
                                 <?php foreach ($variants['storage'] as $storage): ?>
-                                    <input type="radio" 
-                                           class="btn-check variant-radio" 
-                                           name="storage" 
-                                           id="storage<?= $storage['id'] ?>" 
+                                    <input type="radio"
+                                           class="btn-check variant-radio"
+                                           name="storage"
+                                           id="storage<?= $storage['id'] ?>"
                                            value="<?= $storage['id'] ?>"
                                            data-price-modifier="<?= $storage['price_modifier'] ?>"
                                            data-stock="<?= $storage['stock'] ?>"
                                            autocomplete="off"
                                            <?= $storage['is_default'] ? 'checked' : '' ?>>
-                                    <label class="btn btn-outline-primary" for="storage<?= $storage['id'] ?>">
+                                    <label class="pd-option" for="storage<?= $storage['id'] ?>">
                                         <?= htmlspecialchars($storage['variant_name']) ?>
-                                        <?php if ($storage['price_modifier'] > 0): ?>
-                                            <small class="d-block text-success">
-                                                +<?= number_format($storage['price_modifier'], 0, ',', '.') ?>đ
-                                            </small>
-                                        <?php endif; ?>
                                     </label>
                                 <?php endforeach; ?>
                             </div>
                         </div>
                     <?php endif; ?>
-                    
-                    <!-- ============ COLOR VARIANTS ============ -->
-                    <?php if (!empty($variants['color'])): ?>
-                        <div class="variant-section mb-4">
-                            <h6 class="variant-label fw-bold mb-2">
-                                <i class="bi bi-palette-fill text-primary"></i> Color:
-                                <span id="selectedColorName" class="text-muted fw-normal">
-                                    <?= $variants['color'][0]['variant_name'] ?>
-                                </span>
-                            </h6>
-                            <div class="color-variants-wrapper d-flex gap-2">
-                                <?php foreach ($variants['color'] as $index => $color): ?>
-                                    <div class="color-option-wrapper">
-                                        <input type="radio" 
-                                               class="btn-check color-radio" 
-                                               name="color" 
-                                               id="color<?= $color['id'] ?>" 
-                                               value="<?= $color['id'] ?>"
-                                               data-color-name="<?= htmlspecialchars($color['variant_name']) ?>"
-                                               data-stock="<?= $color['stock'] ?>"
-                                               autocomplete="off"
-                                               <?= $index === 0 ? 'checked' : '' ?>>
-                                        <label class="color-swatch" 
-                                               for="color<?= $color['id'] ?>"
-                                               style="background-color: <?= htmlspecialchars($color['variant_value']) ?>;"
-                                               title="<?= htmlspecialchars($color['variant_name']) ?>">
-                                        </label>
-                                    </div>
-                                <?php endforeach; ?>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-                    
-                    <!-- ============ RAM VARIANTS (if exists) ============ -->
+
                     <?php if (!empty($variants['ram'])): ?>
-                        <div class="variant-section mb-4">
-                            <h6 class="variant-label fw-bold mb-2">
-                                <i class="bi bi-memory text-primary"></i> RAM:
-                            </h6>
-                            <div class="btn-group flex-wrap" role="group">
+                        <div class="pd-config-block">
+                            <div class="pd-config-label">Bộ nhớ</div>
+                            <div class="d-flex gap-2 flex-wrap">
                                 <?php foreach ($variants['ram'] as $ram): ?>
-                                    <input type="radio" 
-                                           class="btn-check variant-radio" 
-                                           name="ram" 
-                                           id="ram<?= $ram['id'] ?>" 
+                                    <input type="radio"
+                                           class="btn-check variant-radio"
+                                           name="ram"
+                                           id="ram<?= $ram['id'] ?>"
                                            value="<?= $ram['id'] ?>"
                                            data-stock="<?= $ram['stock'] ?>"
                                            autocomplete="off"
                                            <?= $ram['is_default'] ? 'checked' : '' ?>>
-                                    <label class="btn btn-outline-primary" for="ram<?= $ram['id'] ?>">
+                                    <label class="pd-option" for="ram<?= $ram['id'] ?>">
                                         <?= htmlspecialchars($ram['variant_name']) ?>
                                     </label>
                                 <?php endforeach; ?>
                             </div>
                         </div>
                     <?php endif; ?>
-                    
-                    <!-- ============ QUANTITY SELECTOR ============ -->
-                    <div class="quantity-section mb-4">
-                        <h6 class="fw-bold mb-2">Quantity:</h6>
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="input-group" style="width: 150px;">
-                                <button class="btn btn-outline-secondary" type="button" id="decreaseQty">
-                                    <i class="bi bi-dash"></i>
-                                </button>
-                                <input type="number" 
-                                       class="form-control text-center fw-bold" 
-                                       value="1" 
-                                       min="1" 
-                                       max="<?= $product['stock'] ?>" 
-                                       id="productQuantity" 
-                                       readonly>
-                                <button class="btn btn-outline-secondary" type="button" id="increaseQty">
-                                    <i class="bi bi-plus"></i>
-                                </button>
-                            </div>
-                            <small class="text-muted">
-                                <i class="bi bi-box-seam"></i> 
-                                Available: <strong id="stockDisplay"><?= $product['stock'] ?></strong> items
-                            </small>
-                        </div>
-                    </div>
-                    
-                    <!-- ============ ACTION BUTTONS ============ -->
-                    <div class="action-buttons mb-4 d-flex gap-2">
-                        <button class="btn btn-primary btn-lg flex-grow-1 add-to-cart-btn" 
-                                data-product-id="<?= $product['id'] ?>">
-                            <i class="bi bi-cart-plus-fill"></i> Add To Cart
-                        </button>
-                        <button class="btn btn-outline-secondary btn-lg" 
-                                title="Add to Wishlist">
-                            <i class="bi bi-heart"></i>
-                        </button>
-                        <button class="btn btn-outline-secondary btn-lg" 
-                                title="Compare">
-                            <i class="bi bi-arrow-left-right"></i>
-                        </button>
-                    </div>
-                    
-                    <!-- ============ PRODUCT META INFO ============ -->
-                    <div class="product-meta border-top pt-3">
-                        <table class="table table-sm table-borderless mb-0">
-                            <tbody>
-                                <tr>
-                                    <td class="text-muted" style="width: 30%;">
-                                        <strong>SKU:</strong>
-                                    </td>
-                                    <td>PROD<?= str_pad($product['id'], 5, '0', STR_PAD_LEFT) ?></td>
-                                </tr>
-                                <tr>
-                                    <td class="text-muted">
-                                        <strong>Category:</strong>
-                                    </td>
-                                    <td>
-                                        <a href="?page=shop&category=<?= urlencode($product['category']) ?>" 
-                                           class="text-decoration-none">
-                                            <?= htmlspecialchars($product['category']) ?>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-muted">
-                                        <strong>Brand:</strong>
-                                    </td>
-                                    <td>
-                                        <a href="?page=shop&brand[]=<?= urlencode($product['brand']) ?>" 
-                                           class="text-decoration-none">
-                                            <?= htmlspecialchars($product['brand']) ?>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <?php if ($product['storage']): ?>
-                                <tr>
-                                    <td class="text-muted">
-                                        <strong>Storage:</strong>
-                                    </td>
-                                    <td><?= htmlspecialchars($product['storage']) ?></td>
-                                </tr>
-                                <?php endif; ?>
-                                <?php if ($product['ram']): ?>
-                                <tr>
-                                    <td class="text-muted">
-                                        <strong>RAM:</strong>
-                                    </td>
-                                    <td><?= htmlspecialchars($product['ram']) ?></td>
-                                </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                </div>
-            </div>
-            
-        </div>
-    </div>
-</section>
 
-<!-- ============================================
-     TABS: DESCRIPTION, ADDITIONAL INFO, REVIEWS
-     ============================================ -->
-<section class="product-tabs-section py-5 bg-light">
-    <div class="container">
-        <!-- Tab Navigation -->
-        <ul class="nav nav-tabs nav-fill" id="productTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" 
-                        id="description-tab" 
-                        data-bs-toggle="tab" 
-                        data-bs-target="#description" 
-                        type="button">
-                    <i class="bi bi-file-text"></i> Description
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" 
-                        id="additional-tab" 
-                        data-bs-toggle="tab" 
-                        data-bs-target="#additional" 
-                        type="button">
-                    <i class="bi bi-info-circle"></i> Additional Information
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" 
-                        id="reviews-tab" 
-                        data-bs-toggle="tab" 
-                        data-bs-target="#reviews" 
-                        type="button">
-                    <i class="bi bi-chat-left-text"></i> Reviews (<?= $reviewCount ?>)
-                </button>
-            </li>
-        </ul>
-        
-        <!-- Tab Content -->
-        <div class="tab-content bg-white p-4 rounded-bottom shadow-sm" id="productTabsContent">
-            
-            <!-- ========== DESCRIPTION TAB ========== -->
-            <div class="tab-pane fade show active" id="description" role="tabpanel">
-                <h5 class="mb-3 fw-bold">Product Description</h5>
-                <p class="text-muted"><?= nl2br(htmlspecialchars($product['description'])) ?></p>
-                
-                <?php if ($product['category'] == 'Phones'): ?>
-                    <h6 class="mt-4 mb-3 fw-bold">Key Features:</h6>
-                    <ul class="feature-list">
-                        <li><strong>Brand:</strong> <?= htmlspecialchars($product['brand']) ?></li>
-                        <?php if ($product['storage']): ?>
-                            <li><strong>Storage:</strong> <?= htmlspecialchars($product['storage']) ?></li>
-                        <?php endif; ?>
-                        <?php if ($product['ram']): ?>
-                            <li><strong>RAM:</strong> <?= htmlspecialchars($product['ram']) ?></li>
-                        <?php endif; ?>
-                        <li><strong>Category:</strong> <?= htmlspecialchars($product['category']) ?></li>
-                        <li><strong>Stock:</strong> <?= $product['stock'] ?> units available</li>
-                    </ul>
-                <?php endif; ?>
-            </div>
-            
-            <!-- ========== ADDITIONAL INFORMATION TAB ========== -->
-            <div class="tab-pane fade" id="additional" role="tabpanel">
-                <h5 class="mb-3 fw-bold">Additional Information</h5>
-                <table class="table table-bordered">
-                    <tbody>
-                        <tr>
-                            <th width="30%" class="bg-light">Brand</th>
-                            <td><?= htmlspecialchars($product['brand']) ?></td>
-                        </tr>
-                        <?php if ($product['storage']): ?>
-                        <tr>
-                            <th class="bg-light">Storage Options</th>
-                            <td>
-                                <?php 
-                                $storageOptions = array_column($variants['storage'], 'variant_name');
-                                echo implode(', ', $storageOptions);
-                                ?>
-                            </td>
-                        </tr>
-                        <?php endif; ?>
-                        <?php if (!empty($variants['color'])): ?>
-                        <tr>
-                            <th class="bg-light">Available Colors</th>
-                            <td>
-                                <?php 
-                                $colorOptions = array_column($variants['color'], 'variant_name');
-                                echo implode(', ', $colorOptions);
-                                ?>
-                            </td>
-                        </tr>
-                        <?php endif; ?>
-                        <?php if ($product['ram']): ?>
-                        <tr>
-                            <th class="bg-light">RAM</th>
-                            <td><?= htmlspecialchars($product['ram']) ?></td>
-                        </tr>
-                        <?php endif; ?>
-                        <tr>
-                            <th class="bg-light">Category</th>
-                            <td><?= htmlspecialchars($product['category']) ?></td>
-                        </tr>
-                        <tr>
-                            <th class="bg-light">Availability</th>
-                            <td>
-                                <?php if ($product['stock'] > 0): ?>
-                                    <span class="badge bg-success">In Stock (<?= $product['stock'] ?> items)</span>
-                                <?php else: ?>
-                                    <span class="badge bg-danger">Out of Stock</span>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th class="bg-light">Average Rating</th>
-                            <td>
-                                <div class="d-flex align-items-center gap-2">
-                                    <div class="rating-stars">
-                                        <?php for ($i = 1; $i <= 5; $i++): ?>
-                                        <i class="bi bi-star<?= $i <= round($averageRating) ? '-fill' : '' ?> text-warning"></i>
-                                        <?php endfor; ?>
-                                    </div>
-                                    <strong><?= number_format($averageRating, 1) ?>/5.0</strong>
-                                    <span class="text-muted">(<?= $reviewCount ?> reviews)</span>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            
-            <!-- ========== REVIEWS TAB (PLACEHOLDER) ========== -->
-            <div class="tab-pane fade" id="reviews" role="tabpanel">
-                <div class="row">
-                    <!-- Left: Stats & Form -->
-                    <div class="col-lg-4 mb-4">
-                        <!-- Review Stats -->
-                        <div class="card shadow-sm mb-3">
-                            <div class="card-body text-center">
-                                <h2 class="display-4 fw-bold text-warning mb-2"><?= number_format($averageRating, 1) ?></h2>
-                                <div class="stars-display text-warning fs-4 mb-2">
-                                    <?php
-                                    $fullStars = floor($averageRating);
-                                    $halfStar = ($averageRating - $fullStars) >= 0.5 ? 1 : 0;
-                                    $emptyStars = 5 - $fullStars - $halfStar;
-                                    
-                                    for ($i = 0; $i < $fullStars; $i++) echo '<i class="bi bi-star-fill"></i>';
-                                    if ($halfStar) echo '<i class="bi bi-star-half"></i>';
-                                    for ($i = 0; $i < $emptyStars; $i++) echo '<i class="bi bi-star"></i>';
-                                    ?>
-                                </div>
-                                <p class="text-muted mb-0"><?= $reviewCount ?> reviews</p>
-                            </div>
-                        </div>
-                        
-                        <!-- Rating Breakdown -->
-                        <?php if ($reviewStats && $reviewStats['total_reviews'] > 0): ?>
-                        <div class="card shadow-sm mb-3">
-                            <div class="card-body">
-                                <?php 
-                                $starLabels = ['five_star' => 5, 'four_star' => 4, 'three_star' => 3, 'two_star' => 2, 'one_star' => 1];
-                                foreach ($starLabels as $key => $starNum): 
-                                    $starCount = $reviewStats[$key];
-                                    $percentage = ($starCount / $reviewStats['total_reviews']) * 100;
-                                ?>
-                                <div class="d-flex align-items-center mb-2">
-                                    <span style="width: 50px; font-size: 13px;"><?= $starNum ?> ★</span>
-                                    <div class="progress flex-grow-1 mx-2" style="height: 6px;">
-                                        <div class="progress-bar bg-warning" style="width: <?= $percentage ?>%"></div>
-                                    </div>
-                                    <span class="text-muted" style="width: 30px; font-size: 13px;"><?= $starCount ?></span>
-                                </div>
+                    <?php if (!empty($variants['color'])): ?>
+                        <div class="pd-config-block">
+                            <div class="pd-config-label">Màu sắc<span id="selectedColorName" class="text-muted text-capitalize">- <?= htmlspecialchars($variants['color'][0]['variant_name']) ?></span></div>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <?php foreach ($variants['color'] as $index => $color): ?>
+                                    <input type="radio"
+                                           class="btn-check color-radio"
+                                           name="color"
+                                           id="color<?= $color['id'] ?>"
+                                           value="<?= $color['id'] ?>"
+                                           data-color-name="<?= htmlspecialchars($color['variant_name']) ?>"
+                                           data-stock="<?= $color['stock'] ?>"
+                                           autocomplete="off"
+                                           <?= $index === 0 ? 'checked' : '' ?>>
+                                    <label class="pd-color-swatch color-swatch"
+                                           for="color<?= $color['id'] ?>"
+                                           style="background-color: <?= htmlspecialchars($color['variant_value']) ?>;"
+                                           title="<?= htmlspecialchars($color['variant_name']) ?>"></label>
                                 <?php endforeach; ?>
                             </div>
                         </div>
-                        <?php endif; ?>
-                        
-                        <!-- Review Form -->
-                        <?php if (isset($_SESSION['user_id'])): ?>
-                        <div class="card shadow-sm">
-                            <div class="card-body">
-                                <h6 class="mb-3">Write Your Review</h6>
-                                <form id="reviewForm" enctype="multipart/form-data">
-                                    <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
-                                    
-                                    <!-- Rating -->
-                                    <div class="mb-3">
-                                        <label class="form-label small">Rating <span class="text-danger">*</span></label>
-                                        <div class="rating-input d-flex gap-1 fs-4">
-                                            <?php for ($i = 1; $i <= 5; $i++): ?>
-                                            <i class="bi bi-star text-muted rating-star" data-rating="<?= $i ?>" style="cursor: pointer;"></i>
-                                            <?php endfor; ?>
-                                        </div>
-                                        <input type="hidden" name="rating" id="ratingValue" required>
-                                        <div class="invalid-feedback d-block" id="ratingError" style="display: none;"></div>
-                                    </div>
-                                    
-                                    <!-- Title -->
-                                    <div class="mb-3">
-                                        <label class="form-label small">Title</label>
-                                        <input type="text" class="form-control form-control-sm" name="review_title" maxlength="255">
-                                    </div>
-                                    
-                                    <!-- Review Text -->
-                                    <div class="mb-3">
-                                        <label class="form-label small">Review <span class="text-danger">*</span></label>
-                                        <textarea class="form-control form-control-sm" name="review_text" rows="4" required></textarea>
-                                    </div>
-                                    
-                                    <!-- Images -->
-                                    <div class="mb-3">
-                                        <label class="form-label small">Images (Max 5)</label>
-                                        <div id="imageDropzone" class="border border-dashed rounded p-3 text-center bg-light" style="cursor: pointer;">
-                                            <i class="bi bi-cloud-upload fs-3 text-muted"></i>
-                                            <p class="mb-0 small">Drop images or click</p>
-                                        </div>
-                                        <input type="file" id="reviewImagesInput" name="review_images[]" accept="image/*" multiple style="display: none;">
-                                        <div id="imagePreview" class="mt-2"></div>
-                                    </div>
-                                    
-                                    <div id="reviewAlert" style="display: none;"></div>
-                                    <button type="submit" class="btn btn-primary btn-sm w-100" id="submitReviewBtn">Submit Review</button>
-                                </form>
-                            </div>
+                    <?php endif; ?>
+
+                    <div class="pd-price" id="displayPrice"><?= number_format($displayPrice, 0, ',', '.') ?>đ</div>
+                    <div class="pd-old-price">Giá gốc: <?= number_format($product['price'] ?? 0, 0, ',', '.') ?>đ</div>
+
+                    <div class="pd-rating d-flex align-items-center gap-3 mt-2">
+                        <div class="text-warning">
+                            <?php
+                            $fullStars = floor($averageRating);
+                            $halfStar = ($averageRating - $fullStars) >= 0.5 ? 1 : 0;
+                            $emptyStars = 5 - $fullStars - $halfStar;
+                            for ($i = 0; $i < $fullStars; $i++) echo '<i class="bi bi-star-fill"></i>';
+                            if ($halfStar) echo '<i class="bi bi-star-half"></i>';
+                            for ($i = 0; $i < $emptyStars; $i++) echo '<i class="bi bi-star"></i>';
+                            ?>
                         </div>
-                        <?php else: ?>
-                        <div class="alert alert-info small">
-                            <a href="index.php?page=login_signup">Login</a> to write a review
-                        </div>
-                        <?php endif; ?>
+                        <div><strong><?= number_format($averageRating, 1) ?></strong> <span class="text-muted">(<?= $reviewCount ?> đánh giá)</span></div>
                     </div>
-                    
-                    <!-- Right: Reviews List -->
-                    <div class="col-lg-8">
-                        <?php
-                        echo "<!-- DEBUG from View -->";
-                        echo "<!-- isset(\$reviews): " . (isset($reviews) ? 'YES' : 'NO') . " -->";
-                        echo "<!-- count(\$reviews): " . (isset($reviews) ? count($reviews) : '0') . " -->";
-                        if (isset($reviews) && !empty($reviews)) {
-                        echo "<!-- First Review Keys: " . implode(', ', array_keys($reviews[0])) . " -->";
-                        }
-                        ?>
-                        <?php if (count($reviews) > 0): ?>
-                            <?php foreach ($reviews as $review): ?>
-                            <div class="card shadow-sm mb-3">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <div class="d-flex gap-2">
-                                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                                <?= strtoupper(mb_substr($review['user_name'], 0, 1)) ?>
-                                            </div>
-                                            <div>
-                                                <h6 class="mb-0">
-                                                    <?= htmlspecialchars($review['user_name']) ?>
-                                                    <?php if ($review['is_verified_purchase']): ?>
-                                                    <span class="badge bg-success" style="font-size: 10px;">✓ Verified</span>
-                                                    <?php endif; ?>
-                                                </h6>
-                                                <small class="text-muted"><?= date('d/m/Y', strtotime($review['created_at'])) ?></small>
-                                            </div>
-                                        </div>
-                                        <div class="text-warning">
-                                            <?php for ($i = 1; $i <= 5; $i++): ?>
-                                            <i class="bi bi-star<?= $i <= $review['rating'] ? '-fill' : '' ?>"></i>
-                                            <?php endfor; ?>
-                                        </div>
-                                    </div>
-                                    
-                                    <?php if (!empty($review['review_title'])): ?>
-                                    <h6><?= htmlspecialchars($review['review_title']) ?></h6>
-                                    <?php endif; ?>
-                                    
-                                    <p class="mb-2">
-                                        <?= nl2br(htmlspecialchars($review['review_text'] ?? '')) ?>
-                                    </p>
-                                    
-                                    <?php 
-                                    $reviewImages = json_decode($review['review_images'], true);
-                                    if (!empty($reviewImages) && is_array($reviewImages)): 
-                                    ?>
-                                    <div class="d-flex gap-2 mb-2">
-                                        <?php foreach ($reviewImages as $image): ?>
-                                        <img src="assets/img/reviews/<?= htmlspecialchars($image) ?>" 
-                                             class="img-thumbnail" 
-                                             style="width: 80px; height: 80px; object-fit: cover; cursor: pointer;"
-                                             onclick="openImageModal('assets/img/reviews/<?= htmlspecialchars($image) ?>')">
-                                        <?php endforeach; ?>
-                                    </div>
-                                    <?php endif; ?>
-                                    
-                                    <?php if (!empty($review['admin_reply'])): ?>
-                                    <div class="bg-light p-2 rounded mt-2 border-start border-3 border-primary">
-                                        <strong class="text-primary small">Shop Reply:</strong>
-                                        <p class="mb-0 small"><?= nl2br(htmlspecialchars($review['admin_reply'])) ?></p>
-                                        <small class="text-muted"><?= date('d/m/Y', strtotime($review['admin_reply_at'])) ?></small>
-                                    </div>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                        <div class="text-center py-5">
-                            <i class="bi bi-chat-dots text-muted" style="font-size: 3rem;"></i>
-                            <p class="mt-3 text-muted">No reviews yet. Be the first!</p>
-                        </div>
-                        <?php endif; ?>
+
+                    <div class="d-none">
+                        <input type="number" id="productQuantity" value="1" min="1" max="<?= $product['stock'] ?? 1 ?>" readonly>
+                        <span id="stockDisplay"><?= $product['stock'] ?? 0 ?></span>
+                        <button type="button" id="decreaseQty">-</button>
+                        <button type="button" id="increaseQty">+</button>
                     </div>
                 </div>
             </div>
-            
+        </div>
+
+        <div class="pd-specs mt-4">
+            <div class="pd-specs-head">Đặc tả kỹ thuật</div>
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <th>Bộ xử lý</th>
+                        <td><?= htmlspecialchars($product['name'] ?? 'N/A') ?></td>
+                    </tr>
+                    <tr>
+                        <th>Bộ nhớ</th>
+                        <td><?= htmlspecialchars($product['ram'] ?? 'N/A') ?></td>
+                    </tr>
+                    <tr>
+                        <th>Lữu trữ</th>
+                        <td>
+                            <?php if (!empty($variants['storage'])): ?>
+                                <?php echo implode(', ', array_map(fn($item) => $item['variant_name'], $variants['storage'])); ?>
+                            <?php else: ?>
+                                <?= htmlspecialchars($product['storage'] ?? 'N/A') ?>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Không dây</th>
+                        <td>Wi-Fi 6 / Bluetooth</td>
+                    </tr>
+                    <tr>
+                        <th>I/O Ports</th>
+                        <td>USB-C, HDMI, Audio jack</td>
+                    </tr>
+                    <tr>
+                        <th>Danh mục</th>
+                        <td><?= htmlspecialchars($product['category'] ?? 'N/A') ?></td>
+                    </tr>
+                    <tr>
+                        <th>Nhãn hàng</th>
+                        <td><?= htmlspecialchars($product['brand'] ?? 'N/A') ?></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pd-bottom-bar mt-3">
+            <div class="d-flex align-items-center justify-content-between gap-3 p-3 p-lg-4">
+                <div>
+                    <div class="text-uppercase text-muted" style="font-size: 11px; letter-spacing: 0.8px;">Tổng tiền</div>
+                    <div class="pd-price mb-0" style="font-size: 2rem;"><?= number_format($displayPrice, 0, ',', '.') ?>đ</div>
+                </div>
+                <button class="btn btn-lg add-to-cart-btn"
+                        data-product-id="<?= $product['id'] ?? 0 ?>"
+                        style="background: #dc2626; color: #fff; border: 0; min-width: 170px;">
+                    <i class="bi bi-cart-plus-fill"></i> Thêm vào Giỏ
+                </button>
+            </div>
         </div>
     </div>
 </section>
@@ -623,7 +406,7 @@ function numberToWords($num) {
 <?php if (!empty($relatedProducts)): ?>
 <section class="related-products-section py-5">
     <div class="container">
-        <h3 class="text-center mb-4 fw-bold">Related Products</h3>
+        <h3 class="text-center mb-4 fw-bold">Các sản phẩm khác</h3>
         <div class="row">
             <?php foreach ($relatedProducts as $relProd): ?>
                 <div class="col-md-3 col-sm-6 mb-4">
@@ -654,7 +437,7 @@ function numberToWords($num) {
                                 </small>
                                 <a href="?page=product&id=<?= $relProd['id'] ?>" 
                                    class="btn btn-sm btn-outline-primary">
-                                    View
+                                    Xem thêm
                                 </a>
                             </div>
                         </div>

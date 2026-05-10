@@ -170,7 +170,6 @@ $totalUsers = $userData['total'];
         <thead>
           <tr>
             <th style="width:5%;">ID</th>
-            <th style="width:20%;">Username</th>
             <th style="width:25%;">Full name</th>
             <th style="width:10%;">Role</th>
             <th style="width:10%;">Status</th>
@@ -179,26 +178,24 @@ $totalUsers = $userData['total'];
         </thead>
         <tbody>
         <?php foreach ($users as $u):
-            $isAdmin  = (int)$u['is_admin'] === 1;
+            // $isAdmin  = (int)$u['is_admin'] === 1;
             $isBanned = isBannedUserRow($u);
         ?>
           <tr>
             <td><?= (int)$u['id'] ?></td>
-            <td><?= htmlspecialchars($u['username']) ?></td>
+
             <td><?= htmlspecialchars($u['full_name'] ?? '') ?></td>
             <td>
-              <?php if ($isAdmin): ?>
+              <?php ?>
                 <span class="badge bg-primary">Admin</span>
-              <?php else: ?>
+              <?php?>
                 <span class="badge bg-secondary">Customer</span>
-              <?php endif; ?>
             </td>
             <td>
-              <?php if ($isBanned): ?>
-                <span class="badge bg-danger">Banned</span>
-              <?php else: ?>
+
+              <?php  ?>
                 <span class="badge bg-success">Active</span>
-              <?php endif; ?>
+              <?php?>
             </td>
             <td>
               <!-- Nút mở modal edit -->
@@ -209,20 +206,20 @@ $totalUsers = $userData['total'];
                 Edit
               </button>
 
-              <?php if ($isBanned): ?>
+              <?php  ?>
                 <a href="index.php?page=manage_profile&action=unban&id=<?= (int)$u['id'] ?>"
                    class="btn btn-sm btn-warning"
                    onclick="return confirm('Unban this user?');">
                   Unban
                 </a>
-              <?php else: ?>
+              <?php?>
                 <?php if ((int)$u['id'] !== $loggedInAdminId): ?>
                   <a href="index.php?page=manage_profile&action=ban&id=<?= (int)$u['id'] ?>"
                      class="btn btn-sm btn-outline-warning"
                      onclick="return confirm('Ban this user? This will lock their account.');">
                     Ban
                   </a>
-                <?php endif; ?>
+                <?php  ?>
               <?php endif; ?>
 
               <?php if ((int)$u['id'] !== $loggedInAdminId): ?>
@@ -254,7 +251,7 @@ $totalUsers = $userData['total'];
                         type="text"
                         class="form-control"
                         name="username"
-                        value="<?= htmlspecialchars($u['username']) ?>"
+                        value="<?= htmlspecialchars($u['username'] ?? '') ?>"
                         required
                       >
                     </div>
@@ -276,7 +273,7 @@ $totalUsers = $userData['total'];
                         type="checkbox"
                         id="is_admin_<?= (int)$u['id'] ?>"
                         name="is_admin"
-                        <?= $isAdmin ? 'checked' : '' ?>
+                        <?= ($u['is_admin'] ?? false) ? 'checked' : '' ?>
                       >
                       <label class="form-check-label" for="is_admin_<?= (int)$u['id'] ?>">
                         Administrator account

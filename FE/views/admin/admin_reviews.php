@@ -1,6 +1,6 @@
 
 <?php require_once __DIR__ . '/../layouts/header.php'; ?>
-
+<?php include 'views/layouts/admin_header.php'; ?>
 <!-- Admin Layout Wrapper -->
 <div class="admin-layout">
     <?php include 'views/layouts/admin_sidebar.php'; ?>
@@ -106,7 +106,7 @@
                                             <strong><?= htmlspecialchars(substr($review['review_title'], 0, 40)) ?></strong><br>
                                         <?php endif; ?>
                                         <small class="text-muted">
-                                            <?= htmlspecialchars(substr($review['review_text'], 0, 60)) ?>...
+                                            <?= htmlspecialchars(substr($review['review_text'] ?? '', 0, 60)) ?>...
                                         </small>
                                     </td>
                                     
