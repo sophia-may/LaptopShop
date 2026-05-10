@@ -1,8 +1,11 @@
 <?php include 'views/layouts/admin_header.php'; ?>
 
-<div class="main-content-inner">
+  <div class="admin-layout">
+    <?php include 'views/layouts/admin_sidebar.php'; ?>
 
-      <div class="content-header mb-4">
+    <!-- Main Content Area -->
+    <main class="admin-content">
+      <div class="content-header">
         <h2><i class="bi bi-question-circle"></i> Manage Q&A</h2>
         <p>Add, remove, or edit questions and answers shown on the Q&A page.</p>
       </div>
@@ -28,7 +31,7 @@
         </table>
       </div>
       </div>
-    </div>
+    </main>
   </div>
 
   <!-- Modal for Add/Edit Q&A -->
@@ -60,6 +63,6 @@
     </div>
   </div>
 
-  
+  <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta10/dist/js/tabler.min.js"></script>
   <script src="assets/javascript/admin_manage_qna.js"></script>
-<?php include 'views/layouts/admin_footer.php'; ?>
+  <?php include 'views/layouts/admin_footer.php'; ?>
