@@ -11,11 +11,9 @@
     </div> <!-- page-container end -->
 
     <!-- Scripts -->
-    <script src="assets/srtdash/js/vendor/jquery-3.7.1.min.js"></script>
-    <script src="assets/srtdash/js/popper.min.js"></script>
-    <script src="assets/srtdash/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/srtdash/js/metismenujs.min.js"></script>
-    <script src="assets/srtdash/js/jquery.slimscroll.min.js"></script>
     <script src="assets/srtdash/js/scripts.js"></script>
 </body>
 </html>

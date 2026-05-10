@@ -1311,15 +1311,15 @@ html {
 }
 /* Different background colors for now, can be replaced with images */
 .section-intro {
-    background-image: url('http://localhost/LaptopWeb/FE/assets/img/hero-bg.jpg');
+    background-image: url('../../../assets/img/hero-bg.png');
 }
 
 .section-why {
-    background-image: url('FE/assets/img/hero-bg.jpg');
+    background-image: url('../../../assets/img/hero-bg.png');
 }
 
 .section-placeholder {
-    background-image: url('FE/assets/img/hero-bg.jpg');
+    background-image: url('../../../assets/img/hero-bg.png');
 }
 
 .about-content h2 {
