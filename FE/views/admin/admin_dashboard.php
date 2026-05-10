@@ -1,7 +1,7 @@
 <?php 
 require_once 'config/db.php';
 $pdo = Database::getConnection();
-
+  
 // Get stats
 $stats = [];
 $stmt = $pdo->query("SELECT COUNT(*) as total FROM products");

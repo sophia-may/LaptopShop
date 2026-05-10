@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 10, 2026 at 08:07 AM
+-- Generation Time: May 10, 2026 at 12:38 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -181,6 +181,22 @@ INSERT INTO `contacts` (`id`, `customer_name`, `customer_email`, `subject`, `mes
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `coupons`
+--
+
+CREATE TABLE `coupons` (
+  `id` int(11) NOT NULL,
+  `code` varchar(50) NOT NULL,
+  `discount_percent` decimal(5,2) NOT NULL DEFAULT 0.00,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `description` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `faqs`
 --
 
@@ -202,7 +218,8 @@ INSERT INTO `faqs` (`id`, `question`, `answer`, `sort_order`, `is_active`, `crea
 (1, 'Chính sách bảo hành như thế nào?', 'Tất cả sản phẩm được bảo hành chính hàng tối thiểu 12 tháng. Một số dòng máy Apple được bảo hành lên đến 24 tháng.', 1, 1, '2026-05-08 15:05:19', '2026-05-10 06:05:47'),
 (2, 'Đổi trả sản phẩm như thế nào?', 'Bạn có thể trả lại hoặc đổi sản phẩm trong vòng 7 ngày nếu sản phẩm có lỗi sản xuất, còn nguyên niêm phong và đầy đủ phụ kiện.', 2, 1, '2026-05-08 15:05:19', '2026-05-10 06:05:01'),
 (3, 'Có hỗ trợ trả góp không?', 'Chúng tôi cung cấp hình thức trả góp 0% lãi suất thông qua thẻ tín dụng từ các ngân hàng đối tác: VIB, Techcombank và Sacombank.', 3, 1, '2026-05-08 15:05:19', '2026-05-10 06:05:21'),
-(4, 'Thời gian giao hàng bao lâu?', 'Trong Thành phố Hồ Chí Minh: 2-4 giờ. Các tỉnh thành khác: 1-3 ngày làm việc.', 4, 1, '2026-05-08 15:05:19', '2026-05-10 06:05:33');
+(4, 'Thời gian giao hàng bao lâu?', 'Trong Thành phố Hồ Chí Minh: 2-4 giờ. Các tỉnh thành khác: 1-3 ngày làm việc.', 4, 1, '2026-05-08 15:05:19', '2026-05-10 06:05:33'),
+(5, '1', '123', 0, 1, '2026-05-10 10:24:33', '2026-05-10 10:24:33');
 
 -- --------------------------------------------------------
 
@@ -343,6 +360,18 @@ INSERT INTO `product_variants` (`id`, `product_id`, `sku_code`, `ram`, `color`, 
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `qna`
+--
+
+CREATE TABLE `qna` (
+  `id` int(11) NOT NULL,
+  `question` text NOT NULL,
+  `answer` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `reviews`
 --
 
@@ -402,6 +431,9 @@ INSERT INTO `site_settings` (`key`, `value`, `updated_at`) VALUES
 ('address', '123 Duong Cong Nghe, Quan 1, TP.HCM', '2026-05-08 15:05:18'),
 ('company_name', 'LaptopShop VN', '2026-05-08 15:05:18'),
 ('email', 'contact@laptopshop.vn', '2026-05-08 15:05:18'),
+('general.site_description', '', '2026-05-10 10:13:44'),
+('general.site_name', 'LaptopShop', '2026-05-10 10:13:44'),
+('general.site_tagline', 'Your Trusted Phone Partner', '2026-05-10 10:13:44'),
 ('homepage_banner_1', '/uploads/settings/banner1.jpg', '2026-05-08 15:05:18'),
 ('homepage_banner_2', '/uploads/settings/banner2.jpg', '2026-05-08 15:05:18'),
 ('homepage_intro_text', 'Chung toi chuyen cung cap cac dong laptop chinh hang, gia canh tranh voi dich vu hau mai tot nhat thi truong.', '2026-05-08 15:05:18'),
@@ -499,6 +531,13 @@ ALTER TABLE `contacts`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `coupons`
+--
+ALTER TABLE `coupons`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `code` (`code`);
+
+--
 -- Indexes for table `faqs`
 --
 ALTER TABLE `faqs`
@@ -549,6 +588,12 @@ ALTER TABLE `product_variants`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `sku_code` (`sku_code`),
   ADD KEY `product_id` (`product_id`);
+
+--
+-- Indexes for table `qna`
+--
+ALTER TABLE `qna`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `reviews`
@@ -612,10 +657,16 @@ ALTER TABLE `contacts`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT for table `coupons`
+--
+ALTER TABLE `coupons`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `faqs`
 --
 ALTER TABLE `faqs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `membership_tiers`
@@ -646,6 +697,12 @@ ALTER TABLE `products`
 --
 ALTER TABLE `product_variants`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `qna`
+--
+ALTER TABLE `qna`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `reviews`

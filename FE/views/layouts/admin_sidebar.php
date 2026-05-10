@@ -31,6 +31,7 @@ $currentPage = $_GET['page'] ?? 'admin_dashboard';
                     <li class="<?= $currentPage === 'manage_qna' ? 'active' : '' ?>">
                         <a href="?page=manage_qna" aria-expanded="true"><i class="ti-help-alt"></i><span>Q&A</span></a>
                     </li>
+
                     <li class="<?= $currentPage === 'manage_about_info' || $currentPage === 'manage_info' ? 'active' : '' ?>">
                         <a href="javascript:void(0)" aria-expanded="true"><i class="ti-settings"></i><span>Settings</span></a>
                         <ul class="collapse <?= in_array($currentPage, ['manage_about_info', 'manage_info']) ? 'in' : '' ?>">
