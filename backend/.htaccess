@@ -1,0 +1,12 @@
+RewriteEngine On
+
+# BẮT BUỘC THÊM DÒNG NÀY ĐỂ GIỮ LẠI JWT TOKEN (Dành cho XAMPP/Apache)
+SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+
+# Hide directory listings
+Options -Indexes
+
+# Rewrite rules for front controller
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [QSA,L]

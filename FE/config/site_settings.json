@@ -1,0 +1,95 @@
+{
+    "general": {
+        "site_name": "LaptopShop",
+        "site_tagline": "Your Trusted Phone Partner",
+        "site_logo": "assets\/img\/logo.png",
+        "site_description": "Best place to buy smartphones online"
+    },
+    "header": {
+        "announcement_bar_text": "Free shipping on orders over $100!",
+        "announcement_bar_enabled": "1",
+        "phone_number": "+84 123 456 789",
+        "email": "support@phonestore.com"
+    },
+    "home": {
+        "hero_title": "Welcome to LaptopShop",
+        "hero_subtitle": "Shopping Online",
+        "hero_button_text": "Start shopping",
+        "featured_section_title": "Featured Products",
+        "featured_section_subtitle": "Explore the latest smartphones, accessories and exclusive deals. Secure checkout, fast delivery, and support whenever you need.",
+        "banner_1_title": "All-in-one place for your next phone",
+        "banner_1_subtitle": "landing page",
+        "banner_1_image": "assets\/img\/banner1.jpg",
+        "banner_2_title": "Newest flagship & high-end phones",
+        "banner_2_subtitle": "Premium line-up",
+        "banner_2_image": "assets\/img\/banner2.jpg",
+        "why_choose_title": "Why Choose Us",
+        "why_choose_subtitle": "We provide the best service",
+        "feature_1_icon": "ti-truck",
+        "feature_1_title": "Free Shipping",
+        "feature_1_description": "PhoneStore helps you compare models, prices and specs in seconds. From budget-friendly devices to flagship phones, everything is organized so you can find the right choice without scrolling through endless pages.",
+        "feature_2_icon": "ti-shield-check",
+        "feature_2_title": "Secure Payment",
+        "feature_2_description": "Track your orders in real time, save your favourites and enjoy secure payments designed for online shopping.",
+        "feature_3_icon": "ti-headset",
+        "feature_3_title": "24\/7 Support",
+        "feature_3_description": "Stay up to date with the latest releases from top brands: powerful cameras, stunning displays and all-day battery life. Our premium collection is updated constantly based on the newest trends from the market.",
+        "feature_4_icon": "ti-refresh",
+        "feature_4_title": "Easy Returns",
+        "feature_4_description": "Browse curated picks, compare specs side by side and discover the device that fits your style and performance needs."
+    },
+    "contact": {
+        "page_title": "Get In Touch With Us",
+        "page_subtitle": "For more information about our products & services, feel free to drop us an email.",
+        "phone": "+84 123 456 789",
+        "email": "info@phonestore.com",
+        "address": "123 Street, District, City, Country",
+        "working_hours": "Mon-Fri: 9AM - 6PM\nSat: 9AM - 5PM\nSun: Closed",
+        "map_embed": "",
+        "form_title": "Send Us a Message",
+        "success_message": "Thank you for contacting us! We will get back to you soon."
+    },
+    "footer": {
+        "about_text": "LaptopShop - Your trusted partner for quality phones and accessories. We bring you the latest technology at the best prices.",
+        "newsletter_title": "Subscribe to Newsletter",
+        "newsletter_subtitle": "Get updates on new products and exclusive offers",
+        "social_facebook": "https:\/\/facebook.com\/phonestore",
+        "social_instagram": "https:\/\/instagram.com\/phonestore",
+        "social_twitter": "https:\/\/twitter.com\/phonestore",
+        "social_youtube": "https:\/\/youtube.com\/phonestore",
+        "copyright_text": "All rights reserved",
+        "payment_methods_enabled": "1"
+    },
+    "about": {
+        "page_title": "About PhoneStore",
+        "hero_subtitle": "Your Trusted Mobile Phone Partner",
+        "intro_title": "Welcome to PhoneStore",
+        "intro": "We are a leading phone retailer with years of experience in providing quality smartphones and accessories to customers worldwide.",
+        "mission_title": "Our Mission",
+        "mission": "Our mission is to provide quality phones at affordable prices while ensuring the best customer service experience.",
+        "vision_title": "Our Vision",
+        "vision": "To be the most trusted phone store in the region and expand our services globally.",
+        "values_title": "Our Core Values",
+        "values": "Quality\nTrust\nService\nInnovation\nCustomer First",
+        "stats_customers": "10,000+",
+        "stats_customers_label": "Happy Customers",
+        "stats_products": "500+",
+        "stats_products_label": "Products",
+        "stats_years": "5+",
+        "stats_years_label": "Years Experience",
+        "stats_reviews": "4.8\/5",
+        "stats_reviews_label": "Average Rating"
+    },
+    "shop": {
+        "page_title": "Our Products",
+        "page_subtitle": "Browse our collection of premium smartphones",
+        "filter_title": "Filter Products",
+        "sort_label": "Sort by",
+        "no_products_message": "No products found matching your criteria"
+    },
+    "seo": {
+        "meta_description": "Buy the latest smartphones online at PhoneStore. Best prices, fast shipping, and excellent customer service.",
+        "meta_keywords": "phones, smartphones, mobile phones, buy phone online, phone store",
+        "og_image": "assets\/img\/og-image.jpg"
+    }
+}

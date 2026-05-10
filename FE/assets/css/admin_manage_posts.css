@@ -1,0 +1,223 @@
+/* Admin Manage Posts Styles */
+
+.post-image-preview {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+}
+
+.post-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-height: 1.4;
+    max-height: 2.8em;
+    word-break: break-all;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #1e293b;
+}
+
+.content-preview {
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    color: var(--tblr-muted);
+    line-height: 1.4;
+    max-height: 2.8em;
+    word-break: break-all;
+    font-size: 0.8125rem;
+}
+
+.action-buttons {
+    white-space: nowrap;
+}
+
+.reaction-item, .comment-item {
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--tblr-border-color);
+}
+
+.reaction-item:last-child, .comment-item:last-child {
+    border-bottom: none;
+}
+
+.page-wrapper {
+    padding: 0;
+}
+
+/* Content Editor Styles */
+.content-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    border-bottom: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+.content-toolbar .btn {
+    transition: all 0.2s ease;
+}
+
+.content-toolbar .btn.active {
+    background-color: #206bc4 !important;
+    color: white !important;
+    border-color: #206bc4 !important;
+}
+
+.content-toolbar .btn:hover {
+    background-color: #e9ecef;
+}
+
+.content-toolbar .btn.active:hover {
+    background-color: #1c5ba7 !important;
+    color: white !important;
+}
+
+.content-editor {
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+    padding: 12px;
+    line-height: 1.6;
+}
+
+.content-editor:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.content-editor[contenteditable]:empty:before {
+    content: attr(placeholder);
+    color: #9ca3af;
+    pointer-events: none;
+}
+
+.content-editor h1 {
+    font-size: 2em;
+    font-weight: bold;
+    margin: 0.67em 0;
+}
+
+.content-editor h2 {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin: 0.75em 0;
+}
+
+.content-editor ul, .content-editor ol {
+    margin: 1em 0;
+    padding-left: 40px;
+}
+
+.content-editor ul {
+    list-style-type: disc;
+}
+
+.content-editor ol {
+    list-style-type: decimal;
+}
+
+/* Image Drop Zone */
+.drop-zone {
+    border: 2px dashed #d1d5db;
+    border-radius: 8px;
+    padding: 40px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: #f8f9fa;
+}
+
+.drop-zone:hover {
+    border-color: #206bc4;
+    background-color: #e7f1ff;
+}
+
+.drop-zone.dragover {
+    border-color: #206bc4;
+    background-color: #e7f1ff;
+    transform: scale(1.02);
+}
+
+.drop-zone-content {
+    pointer-events: none;
+}
+
+#image-preview {
+    position: relative;
+}
+
+#image-preview img {
+    border-radius: 8px;
+}
+
+/* Table Column Widths */
+.table-vcenter td:nth-child(1) {
+    width: 50px;
+    text-align: center;
+}
+
+.table-vcenter td:nth-child(2) {
+    width: 300px;
+    max-width: 300px;
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+.table-vcenter td:nth-child(3) {
+    width: 150px;
+    max-width: 150px;
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+.table-vcenter td:nth-child(4) {
+    width: 100px;
+    text-align: center;
+}
+
+.table-vcenter td:nth-child(5) {
+    width: 80px;
+    text-align: center;
+}
+ 
+.table-vcenter td:nth-child(6) {
+    width: 100px;
+    text-align: center;
+}
+
+.table-vcenter td:nth-child(7) {
+    width: 100px;
+    text-align: center;
+}
+
+.table-vcenter td:nth-child(8) {
+    width: 140px;
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+.table-vcenter td:nth-child(9) {
+    width: 100px;
+    text-align: center;
+}
+
+/* Header layout fix */
+.content-header .d-flex {
+    width: 100%;
+}
+
+.content-header .d-flex > div:first-child {
+    flex: 1;
+}
+
+.content-header .btn-primary {
+    flex-shrink: 0;
+}
